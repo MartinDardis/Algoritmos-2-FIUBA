@@ -1,0 +1,12 @@
+CC= gcc
+FLAGS= -g -std=c99 -Wall -Wconversion -Wtype-limits -pedantic -Werror
+VALGRIND= valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./pruebas
+
+build: testing.c testing.h vector_dinamico_pruebas.c vector_dinamico.c vector_dinamico.h
+	$CC $FLAGS -o pruebas *c
+
+execute: $build
+	./pruebas
+
+clean: $execute
+	rm -f pruebas
