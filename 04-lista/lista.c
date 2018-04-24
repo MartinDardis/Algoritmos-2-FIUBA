@@ -34,53 +34,53 @@ void *ver_nodo(nodo_t *actual){ //Uso Interno del tda
 
 //Implementaciones de las firmas publicas
 lista_t *lista_crear(void){
-  lista_t *nueva=malloc(sizeof(lista_t));
+  lista_t *nueva = malloc(sizeof(lista_t));
   if(nueva  ==  NULL)
     return NULL;
-  (nueva->primero)= NULL;
-  (nueva->ultimo)= NULL;
-  (nueva->elementos)= 0;
+  (nueva->primero) = NULL;
+  (nueva->ultimo) = NULL;
+  (nueva->elementos) = 0;
   return nueva;
 }
 
 bool lista_esta_vacia(const lista_t *lista){
-  if ( (lista->elementos)  ==  0)
+  if ( (lista->primero)  ==  NULL)
     return true;
   return false;
 }
 
 bool lista_insertar_primero(lista_t *lista, void *dato){
-  nodo_t *nuevo=crear_nodo();
+  nodo_t *nuevo = crear_nodo();
   if (nuevo  ==  NULL)
     return false;
-  (nuevo->dato)=dato;
+  (nuevo->dato) = dato;
   if (lista_esta_vacia(lista)){
-    (lista->primero)=nuevo;
-    (lista->ultimo)=nuevo;
-    (lista->elementos)=1;
+    (lista->primero) = nuevo;
+    (lista->ultimo) = nuevo;
+    (lista->elementos) = 1;
   }
   else{
-    (nuevo->siguiente)=(lista->primero);
-    (lista->primero)=nuevo;
+    (nuevo->siguiente) = (lista->primero);
+    (lista->primero) = nuevo;
     (lista->elementos)++;
   }
   return true;
 }
 
 bool lista_insertar_ultimo(lista_t *lista, void *dato){
-  nodo_t *nuevo=crear_nodo();
+  nodo_t *nuevo = crear_nodo();
   if (nuevo  ==  NULL)
     return false;
-  (nuevo->dato)=dato;
+  (nuevo->dato) = dato;
   if (lista_esta_vacia(lista)){
-    (lista->primero)=nuevo;
-    (lista->ultimo)=nuevo;
-    (lista->elementos)=1;
+    (lista->primero) = nuevo;
+    (lista->ultimo) = nuevo;
+    (lista->elementos) = 1;
   }
   else{
-    nodo_t *ultimo=(lista->ultimo);
-    (ultimo->siguiente)=nuevo;
-    (lista->ultimo)=nuevo;
+    nodo_t *ultimo = (lista->ultimo);
+    (ultimo->siguiente) = nuevo;
+    (lista->ultimo) = nuevo;
     (lista->elementos)++;
   }
   return true;
@@ -89,10 +89,14 @@ bool lista_insertar_ultimo(lista_t *lista, void *dato){
 void *lista_borrar_primero(lista_t *lista){
   if(lista_esta_vacia(lista))
     return NULL;
-  nodo_t *actual=(lista->primero);
-  void* dato=(actual->dato);
-  (lista->primero)=(actual->siguiente);
+  nodo_t *actual = (lista->primero);
+  void* dato = (actual->dato);
+  (lista->primero) = (actual->siguiente);
   (lista->elementos)--;
+  if (lista_esta_vacia(lista)){
+    (lista->primero) = NULL;
+    (lista->ultimo) = NULL;
+  }
   free(actual);
   return dato;
 }
@@ -129,8 +133,8 @@ void lista_destruir(lista_t *lista, void destruir_dato(void *)){
 void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
   if(lista_esta_vacia(lista))
     return;
-  nodo_t *actual=(lista->primero);
-  while( visitar((actual->dato),extra) && actual!=NULL )
+  nodo_t *actual = (lista->primero);
+  while( visitar((actual->dato),extra) && actual!= NULL )
     actual=(actual->siguiente);
   return;
 }
@@ -159,7 +163,7 @@ bool lista_iter_avanzar(lista_iter_t *iter){
 }
 
 void *lista_iter_ver_actual(const lista_iter_t *iter){
-  nodo_t *actual=(iter->actual);
+  nodo_t *actual = (iter->actual);
   if(lista_iter_al_final(iter))
     return NULL;
   return (actual->dato);
@@ -181,16 +185,15 @@ bool iter_insertar_primero (lista_iter_t *iter,void* dato){
   if (inserto){
     (iter->actual) = ((iter->lista)->primero);
     (iter->anterior) = NULL;// Redundate?
-    ((iter->lista)->elementos)++;
   }
   return inserto;
 }
 bool iter_insertar_ultimo (lista_iter_t *iter,void* dato){
+  nodo_t* ultimo_viejo = ((iter->lista)->ultimo);
   bool inserto = lista_insertar_ultimo(iter->lista,dato);
   if (inserto){
-    (iter->anterior) = (iter->actual);
+    (iter->anterior) = ultimo_viejo;
     (iter->actual) = ((iter->lista)->ultimo);
-    ((iter->lista)->elementos)++;
   }
   return inserto;
 }
@@ -217,14 +220,14 @@ bool lista_iter_insertar(lista_iter_t *iter, void *dato){
 }
 
 void *lista_iter_borrar(lista_iter_t *iter){
-    if (lista_esta_vacia(iter->lista))//Si la lista esta vacia
+    if (lista_esta_vacia(iter->lista) || lista_iter_al_final(iter))//Si la lista esta vacia
       return NULL;
-    if((iter->lista)->elementos  ==  1){
+    if((iter->lista)->elementos  ==  1){// Si la lista tiene 1 solo elemento
       void* dato = lista_borrar_primero(iter->lista);
       (iter->actual) = NULL;
       return dato;
     }
-    if((iter->anterior) == NULL){
+    if((iter->anterior) == NULL){// Si el elemento es el primero
       void* dato = lista_borrar_primero(iter->lista);
       (iter->actual) = ((iter->lista)->primero);
       return dato;
