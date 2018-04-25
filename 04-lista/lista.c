@@ -134,7 +134,7 @@ void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *e
   if(lista_esta_vacia(lista))
     return;
   nodo_t *actual = (lista->primero);
-  while( visitar((actual->dato),extra) && actual!= NULL )
+  while((actual != NULL ) && visitar((actual->dato),extra) )
     actual=(actual->siguiente);
   return;
 }
