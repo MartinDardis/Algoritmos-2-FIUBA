@@ -222,7 +222,7 @@ bool lista_iter_insertar(lista_iter_t *iter, void *dato){
 void *lista_iter_borrar(lista_iter_t *iter){
     if (lista_esta_vacia(iter->lista) || lista_iter_al_final(iter))//Si la lista esta vacia
       return NULL;
-    if((iter->lista)->elementos  ==  1){// Si la lista tiene 1 solo elemento
+    if( (iter->lista)->elementos  ==  1){// Si la lista tiene 1 solo elemento
       void* dato = lista_borrar_primero(iter->lista);
       (iter->actual) = NULL;
       return dato;
