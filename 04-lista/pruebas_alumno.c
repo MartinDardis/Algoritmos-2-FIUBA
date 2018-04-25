@@ -6,6 +6,32 @@
 #define ELEMENTOS_A_INSERTAR {1,2,3,4,5,6,7,8,9,10}
 #define TAM_VECTOR 10
 
+void iter_ext_insertar_desordenado(){
+   lista_t* lista = lista_crear();
+   lista_iter_t* iter = lista_iter_crear(lista);
+   int vector[3]={1,2,3};
+   print_test("* iter esta al final",lista_iter_al_final(iter));
+   print_test("* Borrar lista vacio",!lista_iter_borrar(iter));
+   print_test("* Avanzar iter lista vacia",!lista_iter_avanzar(iter));
+   print_test("* Iter actual en lista vacia es NULL",lista_iter_ver_actual(iter)==NULL);
+   print_test("* Inserto al principio",lista_iter_insertar(iter,&vector[0]));//meto al principio
+   print_test("* Avanzo 1",lista_iter_avanzar(iter));
+   print_test("* Iter esta al final",lista_iter_al_final(iter));
+   print_test("* Inserto al final",lista_iter_insertar(iter,&vector[2]));//meto al final
+   print_test("* Inserto al medio",lista_iter_insertar(iter,&vector[1]));//meto en el medio
+   lista_iter_destruir(iter);
+   iter = lista_iter_crear(lista);
+   print_test("* Iter actual es 1",lista_iter_ver_actual(iter) == &vector[0]);
+   print_test("* Iter borrar elemento",lista_iter_borrar(iter));
+   print_test("* Iter actual es 2",lista_iter_ver_actual(iter) == &vector[1]);
+   print_test("* Iter borrar elemento",lista_iter_borrar(iter));
+   print_test("* Iter actual es 3",lista_iter_ver_actual(iter) == &vector[2]);
+   print_test("* Iter borrar elemento",lista_iter_borrar(iter));
+   print_test("* Lista esta vacia",lista_esta_vacia(lista));
+   lista_iter_destruir(iter);
+   lista_destruir(lista,NULL);
+}
+
 bool sumar_primeros_cinco(void* dato, void* extra){
   while(*(int*)extra < 15){
     *((int*)extra) += *((int*) dato);
@@ -112,18 +138,24 @@ void prueba_iter_externos_1_elemento(void){
   lista_t *lista = lista_crear();
   print_test("* Crear una lista",!(lista == NULL));
   lista_iter_t *iter = lista_iter_crear(lista);
-  int numero = 1;
-  print_test("* Lista vacia - Iterador apuntando a NULL",(lista_esta_vacia(lista)) && (lista_iter_ver_actual(iter)) == NULL);
-  print_test("* Insertar con interador",lista_iter_insertar(iter,&numero));
+  int *numero = malloc(sizeof(int));
+  print_test("* Alloc del elemento",numero != NULL);
+  *numero=10;
+  printf("El dato a insertar es [%i]\n",*numero);
+  print_test("* Insertar con interador",lista_iter_insertar(iter,numero));
   print_test("* Ver primero y iter ver actual",((lista_ver_primero(lista)) && (lista_iter_ver_actual(iter)) ));
   print_test("* Eliminar elemento",lista_iter_borrar(iter));
   print_test("* Lista esta vacia",lista_esta_vacia (lista));
   print_test("* Lista iter esta al final",lista_iter_ver_actual(iter)==NULL);
-  print_test("* Insertar al final con lista vacia e iter en NULL",lista_iter_insertar(iter,&numero));
-  print_test("* Eliminar elemento",lista_iter_borrar(iter));
-  print_test("* Eliminar elemento lista vacia iter en NULL",lista_iter_borrar(iter) == NULL);
+  print_test("* Insertar al final con lista vacia e iter en NULL",lista_iter_insertar(iter,numero));
+  printf("El ultimo es [%i] \n",*(int*)lista_ver_ultimo(lista));
+  print_test("* Iter NO esta al final",!lista_iter_al_final(iter));
+  print_test("* Eliminar elemento",lista_iter_borrar(iter) == numero);
+  print_test("* El largo es 0",lista_largo(lista)==0);
   lista_iter_destruir(iter);
-  lista_destruir(lista,NULL);
+  lista_insertar_ultimo(lista,numero);
+  print_test("Insertar ultimo en lista vacia es primero",lista_ver_primero(lista)== lista_ver_ultimo(lista));
+  lista_destruir(lista,free);
   printf("\n++++++ Fin 1 elemento ++++++\n" );
 }
 
@@ -132,6 +164,7 @@ void prueba_iter_externos(void){
   prueba_iter_externos_1_elemento();
   prueba_iter_externo_recorrer_varios_elementos();
   prueba_iter_externo_insertar_varios_elementos();
+  iter_ext_insertar_desordenado();
 }
 
 void primitivas_lista(void){
@@ -165,6 +198,9 @@ void pruebas_lista_alumno(void){
   primitivas_lista();
   prueba_iter_externos();
   prueba_iter_internos();
+
+
+
   printf("\n Total de errores %i\n",failure_count() );
   return;
 }

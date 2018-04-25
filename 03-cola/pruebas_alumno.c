@@ -37,16 +37,17 @@ void crear_encolar_lote_destruir(){
 void crear_encolar_varios_destruir(){
   printf("-------- Crear, encolar varios, Desencolar y destruir una cola --------\n");
   cola_t* cola=NULL;
-  int vector[9]={1,2,3,4};
+  int vector[9]={1,2,3,4,5,6,7,8,9};
   print_test("** Crear Cola",(cola=cola_crear())!=NULL);
   print_test("** Cola esta esta vacia", cola_esta_vacia(cola));
-  for(int i=0;i<4;i++){
+  for(int i=0; i<9 ;i++){
     print_test("** Encolar",cola_encolar(cola,&vector[i]));
   }
   print_test("** Cola esta no esta vacia", cola_esta_vacia(cola)==false);
   print_test("** Primer elemento es primer dato",cola_ver_primero(cola) == &vector[0]);
   printf("** Primer dato es %i = %i\n",vector[0],*((int*)cola_ver_primero(cola)));
-  print_test("** Desencolar",cola_desencolar(cola)== &vector[0]);
+  for(int i=0 ; i < 9; i++)
+  	print_test("** Desencolar",cola_desencolar(cola) == &vector[i]);
   cola_destruir(cola,NULL);
   print_test("** Cola esta vacia",cola_esta_vacia(cola));
 
