@@ -9,7 +9,7 @@
 void iter_ext_insertar_desordenado(){
    lista_t* lista = lista_crear();
    lista_iter_t* iter = lista_iter_crear(lista);
-   int vector[3]={1,2,3};
+   int vector[3] = {1,2,3};
    print_test("* iter esta al final",lista_iter_al_final(iter));
    print_test("* Borrar lista vacio",!lista_iter_borrar(iter));
    print_test("* Avanzar iter lista vacia",!lista_iter_avanzar(iter));
@@ -33,9 +33,9 @@ void iter_ext_insertar_desordenado(){
 }
 
 bool sumar_primeros_cinco(void* dato, void* extra){
-  while(*(int*)extra < 15){
+  while( *(int*)extra < 15){
     *((int*)extra) += *((int*) dato);
-    printf("contador %i\n",* (int*)extra );
+    printf("contador %i\n", *(int*)extra );
     return true;
   }
   return false;
@@ -45,7 +45,7 @@ void prueba_iter_internos(){
   printf("\n++++++ Prueba iterador INTERNO ++++++\n" );
   lista_t* lista = lista_crear();
   print_test("* Crear una lista",!(lista == NULL));
-  int vector[TAM_VECTOR]=ELEMENTOS_A_INSERTAR;
+  int vector[TAM_VECTOR] = ELEMENTOS_A_INSERTAR;
   for(int i=0; i < TAM_VECTOR ;i++){
     print_test("* Insertar Ultimo",lista_insertar_ultimo(lista,&vector[i]));
   }
@@ -65,13 +65,13 @@ void borrar_ordenado (lista_t *lista){
   return;
 }
 void borrar_desordenado(lista_t *lista){
-  lista_iter_t *iter=lista_iter_crear(lista);
+  lista_iter_t *iter = lista_iter_crear(lista);
   while(!lista_iter_al_final(iter)){
     printf(" [%i]",*(int*)lista_iter_ver_actual(iter));
     lista_iter_avanzar(iter);
   }
   lista_iter_destruir(iter);
-  iter=lista_iter_crear(lista);
+  iter = lista_iter_crear(lista);
   print_test("\n* Nuevo iterador esta al principio",lista_iter_ver_actual(iter) == lista_ver_primero(lista));
   lista_iter_avanzar(iter);
   lista_iter_avanzar(iter);
@@ -79,7 +79,7 @@ void borrar_desordenado(lista_t *lista){
   lista_iter_avanzar(iter);
   print_test("* Borrar poscion 5",lista_iter_borrar(iter));
   lista_iter_destruir(iter);
-  iter=lista_iter_crear(lista);
+  iter = lista_iter_crear(lista);
   while(!lista_iter_al_final(iter)){
     printf(" [%i]",*(int*)lista_iter_ver_actual(iter));
     lista_iter_avanzar(iter);
@@ -98,7 +98,7 @@ void prueba_iter_externo_insertar_varios_elementos(){
     print_test("* Avanzar",lista_iter_avanzar(iter));
     print_test("* Insertar en lista", lista_iter_insertar(iter,&vector[i]));
   }
-  printf("Actual es : %i \n",* (int*)(lista_iter_ver_actual(iter)));
+  printf("Actual es : %i \n", *(int*)(lista_iter_ver_actual(iter)));
   lista_iter_avanzar(iter);
   print_test("* Iter esta al final ",lista_iter_al_final(iter));
   printf("* Lista ver ultimo %i\n",*(int*)lista_ver_ultimo(lista));
@@ -140,7 +140,7 @@ void prueba_iter_externos_1_elemento(void){
   lista_iter_t *iter = lista_iter_crear(lista);
   int *numero = malloc(sizeof(int));
   print_test("* Alloc del elemento",numero != NULL);
-  *numero=10;
+  *numero = 10;
   printf("El dato a insertar es [%i]\n",*numero);
   print_test("* Insertar con interador",lista_iter_insertar(iter,numero));
   print_test("* Ver primero y iter ver actual",((lista_ver_primero(lista)) && (lista_iter_ver_actual(iter)) ));
@@ -169,14 +169,14 @@ void prueba_iter_externos(void){
 
 void primitivas_lista(void){
   printf("++++++ Pruebas de las PRIMITIVAS de la lista ++++++\n" );
-  lista_t *lista=lista_crear();
+  lista_t *lista = lista_crear();
   int numero = 1;
   char vector[TAM_VECTOR] = {'a','b','c','d','e','f','g','h','i','j'};
   print_test("* Crear una lista",!(lista == NULL));
   print_test("* Lista esta vacia",lista_esta_vacia(lista));
   print_test("* Insertar primero",lista_insertar_primero(lista,&numero));
   print_test("* Lista ver primero", (&numero == lista_ver_primero (lista) ) );
-  print_test("* Ver primero = Ver ultimo",lista_ver_primero(lista)==lista_ver_ultimo(lista));
+  print_test("* Ver primero = Ver ultimo",lista_ver_primero(lista) == lista_ver_ultimo(lista));
   print_test("* Largo de la lista es 1", lista_largo(lista) == 1 );
   printf("++++++ Pruebas en volumen \n");
   printf("* El ultimo elemento a insertar es -> '%c'\n",vector[9] );
@@ -185,7 +185,7 @@ void primitivas_lista(void){
   }
   print_test("* Lista ver primero", (&numero == lista_ver_primero (lista) ) );
   printf("* El ultimo elemento es -> '%c'\n",*((char*)lista_ver_ultimo(lista)));
-  lista_borrar_primero(lista);
+  print_test("** Borrar primero",lista_borrar_primero(lista) == &numero);
   for(int i = 0;i < TAM_VECTOR;i++){
     print_test("** Borrar primero",*((char*)lista_borrar_primero(lista)) == vector [i]) ;
   }
@@ -198,9 +198,6 @@ void pruebas_lista_alumno(void){
   primitivas_lista();
   prueba_iter_externos();
   prueba_iter_internos();
-
-
-
   printf("\n Total de errores %i\n",failure_count() );
   return;
 }
