@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
+#define TAM_STRING_JOIN 1000
 
 char** split(const char* str, char sep){
   if (sep == '\0')
     return NULL;
   size_t cant_carcteres = strlen(str);
-  char** vector_str = malloc( (cant_carcteres) * sizeof(char*) ); // Suponiendo que todos los caracteres de la cadena se encuentre separador por SEP
+  char** vector_str = malloc( ((cant_carcteres/2)+1) * sizeof(char*) ); // Suponiendo que todos los caracteres de la cadena se encuentre separador por SEP
   if ( vector_str == NULL )
     return NULL;
   size_t pos=0,j=0;
@@ -25,7 +25,7 @@ char** split(const char* str, char sep){
 }
 
 char* join(char** strv, char sep){
-  char* string = malloc(1000 * sizeof(char*));
+  char* string = malloc(TAM_STRING_JOIN * sizeof(char*));
   size_t pos = 0;
   while (strv[pos] != NULL){
     strcat(string,strv[pos]);
