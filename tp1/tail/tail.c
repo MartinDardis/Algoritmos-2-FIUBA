@@ -21,8 +21,8 @@ void leer_lineas(cola_t* cola_lineas,size_t cant_a_leer){
   size_t cant_leidas=0;
   char* buffer;
   size_t cantidad = 0;
-  while(!feof(stdin)){
-    ssize_t largo_buffer = getline(&buffer,&cantidad,stdin);
+  while( !feof(stdin) ){
+    getline(&buffer,&cantidad,stdin)
     if(cant_leidas <= cant_a_leer){
         cola_encolar(cola_lineas,&buffer);
     }
