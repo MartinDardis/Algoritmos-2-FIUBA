@@ -35,19 +35,19 @@ void leer_lineas(cola_t* cola_lineas,size_t cant_a_leer){
   char* buffer = NULL;
   size_t cantidad = 0;
   ssize_t leidos = 0;
-  while( (leidos = getline(&buffer,&cantidad,stdin)) > 0 ){ // !feof(stdin)
+  while( (leidos = getline(&buffer,&cantidad,stdin)) > 0 ){
     if(cant_leidas < cant_a_leer){
-        cola_encolar(cola_lineas,buffer);
+        cola_encolar(cola_lineas,buffer);//Encolo la linea obtenida
     }
     else{
-      free(cola_desencolar(cola_lineas));
-      cola_encolar(cola_lineas,buffer);
+      free(cola_desencolar(cola_lineas));//libero la linea encolada primero
+      cola_encolar(cola_lineas,buffer);//Encolo la linea leida
     }
     cant_leidas++;
-    cantidad = 0;
-    buffer = NULL;
+    cantidad = 0;//Limpio buffer
+    buffer = NULL;//Limpio buffer
   }
-  free(buffer);
+  free(buffer);//Libero Buffer
   return;
 }
 
