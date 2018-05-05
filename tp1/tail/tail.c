@@ -19,39 +19,40 @@ int main (int argc,char* argv[]){
     perror("Cantidad de parametros erronea");
     return ERROR_CANT_ARG;
   }
-  size_t cant_a_leer = atoi(argv[1]);
+  size_t cant_a_leer = (size_t) atoi(argv[1]);
   if( cant_a_leer == 0 ){
     perror("Tipo de parametro incorrecto");
     return ARG_NO_ES_NUMERO;
   }
   cola_t* lineas_a_imprimir = cola_crear();
   leer_lineas(lineas_a_imprimir,cant_a_leer);
-  imprimir_lineas(lineas_a_imprimir);
   cola_destruir(lineas_a_imprimir,imprimir_lineas);
   return 0;
 }
 
 void leer_lineas(cola_t* cola_lineas,size_t cant_a_leer){
-  size_t cant_leidas=0;
-  char* buffer;
+  size_t cant_leidas = 0;
+  char* buffer = NULL;
   size_t cantidad = 0;
-  while( !feof(stdin) ){
-    getline(&buffer,&cantidad,stdin);
-    if(cant_leidas <= cant_a_leer){
-        cola_encolar(cola_lineas,&buffer);
+  ssize_t leidos = 0;
+  while( (leidos = getline(&buffer,&cantidad,stdin)) > 0 ){ // !feof(stdin)
+    if(cant_leidas < cant_a_leer){
+        cola_encolar(cola_lineas,buffer);
     }
     else{
       free(cola_desencolar(cola_lineas));
-      cola_encolar(cola_lineas,&buffer);
+      cola_encolar(cola_lineas,buffer);
     }
     cant_leidas++;
+    cantidad = 0;
     buffer = NULL;
   }
+  free(buffer);
   return;
 }
 
 void imprimir_lineas(void* linea){
-  printf("%s\n",(char*)linea);
+  printf("%s",(char*)linea);
   free(linea);
   return;
 }
