@@ -39,7 +39,7 @@ void comparar_archivos(FILE* archivo_1, FILE* archivo_2){
   char* linea_arch_2 = leer_linea(archivo_2);
   while( !feof(archivo_1) && !feof(archivo_2) ){
     if (strcmp(linea_arch_1,linea_arch_2) != 0 ){
-      fprintf(stdout,"Diferencia en linea%i\n< %s\n---\n> %s\n",linea,linea_arch_1,linea_arch_2);
+      fprintf(stdout,"Diferencia en linea%i\n< %s---\n> %s",linea,linea_arch_1,linea_arch_2);
     }
     linea++;
     free(linea_arch_1);
@@ -48,13 +48,13 @@ void comparar_archivos(FILE* archivo_1, FILE* archivo_2){
     linea_arch_2 = leer_linea(archivo_2);
   }
   while ( !feof(archivo_1) ){
-    fprintf(stdout,"Diferencia en linea%i\n< %s\n---\n> %s\n",linea,linea_arch_1,"");
+    fprintf(stdout,"Diferencia en linea%i\n< %s---\n> %s",linea,linea_arch_1,"");
     free(linea_arch_1);
     linea++;
     linea_arch_1 = leer_linea(archivo_1);
   }
   while ( !feof(archivo_2) ){
-    fprintf(stdout,"Diferencia en linea%i\n< %s\n---\n> %s\n",linea,"",linea_arch_2);
+    fprintf(stdout,"Diferencia en linea%i\n< %s---\n> %s",linea,"",linea_arch_2);
     free(linea_arch_2);
     linea++;
     linea_arch_2 = leer_linea(archivo_2);
@@ -65,9 +65,8 @@ void comparar_archivos(FILE* archivo_1, FILE* archivo_2){
 }
 
 char* leer_linea(FILE* archivo){
-  char* linea_arch = malloc (100 * sizeof(char));
-  //size_t cant_arch;
-  //getline(&linea_arch,&cant_arch,archivo);
-  fscanf(archivo,"%s",linea_arch);
-  return linea_arch;
+  char* buffer = NULL;
+  size_t cant = 0;
+  getline(&buffer,&cant,archivo);
+  return buffer;
 }
