@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "strutil.h"
 #include <string.h>
 
@@ -14,5 +15,6 @@ int main (){
   char* frase_join = join(frase_dividida,';');
   printf("%s\n",frase_join);
   free_strv(frase_dividida);
+  free(frase_join);
  return 0;
 }

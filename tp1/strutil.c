@@ -2,14 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#define TAM_STRING_JOIN 1000
 
+size_t recorrer_cadena_split(const char* str, size_t* cant_de_sep, char sep){
+  size_t i = 0;
+  while( str[i] != '\0'){
+    if ( str[i] == sep)
+      (*cant_de_sep)++;
+    i++;
+  }
+  return i;
+}
 char** split(const char* str, char sep){
   if (sep == '\0')
     return NULL;
-  size_t cant_carcteres = strlen(str);
-  char** vector_str = malloc( ((cant_carcteres/2)+1) * sizeof(char*) ); // Suponiendo que todos los caracteres de la cadena se encuentre separador por SEP
-  if ( vector_str == NULL )
+  size_t cant_de_cadenas = 1;
+  size_t cant_carcteres = recorrer_cadena_split(str,&cant_de_cadenas,sep);
+  char** vector_str = malloc( (cant_de_cadenas) * sizeof(char*) );
+  if ( vector_str == NULL)
     return NULL;
   size_t pos=0,j=0;
   for (size_t i=0; i <= cant_carcteres ; i++){
@@ -24,13 +33,24 @@ char** split(const char* str, char sep){
   return vector_str;
 }
 
+size_t tam_string_join(char* strv[]){
+  size_t largo = 0;
+  size_t pos = 0;
+  while (strv[pos] != NULL) {
+    largo += strlen(strv[pos]);
+    pos++;
+  }
+  return largo;
+}
 char* join(char** strv, char sep){
-  char* string = malloc(TAM_STRING_JOIN * sizeof(char*));
+  if(strv == NULL)
+    return NULL;
+  char* string = malloc(tam_string_join(strv) * sizeof(char*));
   size_t pos = 0;
   while (strv[pos] != NULL){
     strcat(string,strv[pos]);
     if(strv[pos+1]!= NULL)
-      strncat(string,&sep,1);
+      strncat(string,&sep,sizeof(sep));
     pos++;
   }
   return string;
