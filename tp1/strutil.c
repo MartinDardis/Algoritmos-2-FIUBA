@@ -3,6 +3,11 @@
 #include <string.h>
 #include <stdbool.h>
 
+void liberar_por_error(char* vector_str[],size_t pos){
+  for(size_t i=0;i<pos;i++)
+    free(vector_str[i]);
+  return;
+}
 size_t recorrer_cadena_split(const char* str, size_t* cant_de_sep, char sep){
   size_t i = 0;
   while( str[i] != '\0'){
@@ -13,10 +18,10 @@ size_t recorrer_cadena_split(const char* str, size_t* cant_de_sep, char sep){
   return i;
 }
 char** split(const char* str, char sep){
-  if (sep == '\0')
-    return NULL;
   size_t cant_de_cadenas = 1;
   size_t cant_carcteres = recorrer_cadena_split(str,&cant_de_cadenas,sep);
+  if (sep == '\0' )
+    return NULL;
   char** vector_str = malloc( (cant_de_cadenas) * sizeof(char*) );
   if ( vector_str == NULL)
     return NULL;
@@ -24,6 +29,10 @@ char** split(const char* str, char sep){
   for (size_t i=0; i <= cant_carcteres ; i++){
     if(str[i] == sep || i == cant_carcteres ){
       vector_str[pos] = malloc ((i-j) * sizeof(char));
+      if (vector_str[pos] == NULL){
+        liberar_por_error(vector_str,pos);
+        return NULL
+      }
       strncpy(vector_str[pos],&str[j],(i-j));
       j = i+1;
       pos++;
