@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-const int TAM_INICIAL = 1000;
+const int TAM_INICIAL = 100000;
 const int INDICE_AMPLIAR = 4;
 const int INDICE_REDUCIR = 4;
 
-const double MAX_FACTOR_CARGA = 0.7;
-const double MIN_FACTOR_CARGA = 0.07;
+const double MAX_FACTOR_CARGA = 70;
+const double MIN_FACTOR_CARGA = 7;
 
 typedef void (*hash_destruir_dato_t)(void *);
 typedef struct hash hash_t;
@@ -174,10 +174,11 @@ size_t buscar_vacio(hash_t* hash,size_t inicio,size_t tope){
 * Post: Se almacenó el par (clave, dato)
 */
 bool vericar_tamanio(hash_t* hash){
-  if((hash->ocupados / hash->tam <= MIN_FACTOR_CARGA) && (hash->tam > TAM_INICIAL))
-    return hash_redimensionar(hash, hash->tam / INDICE_REDUCIR);
-  if( (hash->ocupados / hash->tam ) >= MAX_FACTOR_CARGA)
+  size_t factor = (hash->ocupados / hash->tam) * 100;
+  if( factor >= MAX_FACTOR_CARGA)
     return hash_redimensionar(hash, hash->tam * INDICE_AMPLIAR); //aumento el tamaño
+  if( ( factor <= MIN_FACTOR_CARGA) && (hash->tam > TAM_INICIAL))
+    return hash_redimensionar(hash, hash->tam / INDICE_REDUCIR);
   return true;
 }
 
