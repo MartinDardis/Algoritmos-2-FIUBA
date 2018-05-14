@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-const int TAM_INICIAL = 100000;
+const int TAM_INICIAL = 1000;
 const int INDICE_AMPLIAR = 4;
 const int INDICE_REDUCIR = 4;
 
@@ -159,7 +159,10 @@ bool hash_redimensionar(hash_t *hash, size_t tam_nuevo){
 /*PRE: el vector de hash nunca va a esta lleno*/
 size_t buscar_vacio(hash_t* hash,size_t inicio,size_t tope){
   size_t i = inicio+1;
+  if(i == tope)
+    return 0;
   while(hash->datos[i].estado == ocupado){
+    i++;
     if(i == tope)
       i=0;
   }
