@@ -3,6 +3,17 @@
 #include <string.h>
 #include <stdbool.h>
 
+char* strndup (const char *s, size_t n){
+  char *result;
+  size_t len = strlen(s);
+  if (n < len)
+    len = n;
+  result = (char *) malloc (len + 1);
+  if (!result)
+    return 0;
+  result[len] = '\0';
+  return (char *) memcpy (result, s, len);
+}
 void liberar_por_error(char* vector_str[],size_t pos){
   for(size_t i=0;i<pos;i++)
     free(vector_str[i]);
@@ -28,12 +39,11 @@ char** split(const char* str, char sep){
   size_t pos=0,j=0;
   for (size_t i=0; i <= cant_carcteres ; i++){
     if(str[i] == sep || i == cant_carcteres ){
-      vector_str[pos] = malloc ((i-j) * sizeof(char));
-      if (vector_str[pos] == NULL){
+      vector_str[pos] = strndup(&str[j],(i-j));
+      if(vector_str[pos] == NULL ){
         liberar_por_error(vector_str,pos);
         return NULL;
       }
-      strncpy(vector_str[pos],&str[j],(i-j));
       j = i+1;
       pos++;
     }
@@ -55,12 +65,17 @@ char* join(char** strv, char sep){
   if(strv == NULL)
     return NULL;
   char* string = malloc(tam_string_join(strv) * sizeof(char*));
+  if (string == NULL)
+    return NULL;
   size_t pos = 0;
   while (strv[pos] != NULL){
-    strcat(string,strv[pos]);
-    if(strv[pos+1]!= NULL)
-      strncat(string,&sep,sizeof(sep));
+    if(pos == 0)
+      strcpy(string,strv[pos]);
+    else
+      strcat(string,strv[pos]);
     pos++;
+    if(strv[pos] != NULL)
+      strncat(string,&sep,sizeof(sep));
   }
   return string;
 }

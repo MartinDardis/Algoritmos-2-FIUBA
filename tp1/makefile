@@ -11,7 +11,7 @@ execute: build
 	./pruebas
 
 valgrind: build
-		$(VALGRIND) ./pruebas
+		$(VALGRIND) -v ./pruebas
 
 gdb: build
 	$(GDB) pruebas
