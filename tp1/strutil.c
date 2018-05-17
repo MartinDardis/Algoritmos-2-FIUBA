@@ -22,7 +22,7 @@ char** split(const char* str, char sep){
   size_t cant_carcteres =+ recorrer_cadena_split(str,&cant_de_cadenas,sep);
   if (sep == '\0' )
     return NULL;
-  char** vector_str = malloc( (cant_de_cadenas) * sizeof(char*) );
+  char** vector_str = malloc( (cant_de_cadenas+1) * sizeof(char*) );
   if ( vector_str == NULL)
     return NULL;
   size_t pos=0,j=0;
@@ -71,6 +71,7 @@ void free_strv(char* strv[]){
     free (strv[i]);
     i++;
   }
+  free(strv[i]);
   free(strv);
   return;
 }
