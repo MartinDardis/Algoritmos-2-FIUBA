@@ -17,7 +17,20 @@ int main (){
   free_strv(frase_dividida);
   free(frase_join);
 
-  frase =",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,";
+  frase =",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,";
+  char** spl_1 = split(frase,',');
+  pos = 0;
+  while ( spl_1[pos] != NULL){
+    printf("[%s] ",spl_1[pos]);
+    pos++;
+  }
+  printf("\n");
+  char* spl_join_1 = join(spl_1,';');
+  printf("%s\n",spl_join_1);
+  free(spl_join_1);
+  free_strv(spl_1);
+
+  frase ="hola,,todo,mal,,esto,,,anda,,mal";
   char** spl = split(frase,',');
   pos = 0;
   while ( spl[pos] != NULL){

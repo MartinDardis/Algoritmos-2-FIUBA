@@ -56,15 +56,16 @@ size_t tam_string_join(char* strv[]){
   size_t largo = 0;
   size_t pos = 0;
   while (strv[pos] != NULL) {
-    largo += strlen(strv[pos])+1;
+    largo += strlen(strv[pos])+1;//+1 por el separador
     pos++;
   }
-  return largo+1;
+  return largo;
 }
 char* join(char** strv, char sep){
   if(strv == NULL)
     return NULL;
-  char* string = malloc(tam_string_join(strv) * sizeof(char*));
+  size_t tam = tam_string_join(strv);
+  char* string = malloc(tam * sizeof(char*));
   if (string == NULL)
     return NULL;
   size_t pos = 0 , largo = 0;
@@ -81,7 +82,6 @@ char* join(char** strv, char sep){
       largo++;
     }
   }
-  largo++;
   string[largo] = '\0';
   return string;
 }
