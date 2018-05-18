@@ -59,7 +59,7 @@ size_t tam_string_join(char* strv[]){
     largo += strlen(strv[pos])+1;//+1 por el separador
     pos++;
   }
-  return largo;
+  return largo+1;
 }
 char* join(char** strv, char sep){
   if(strv == NULL)
