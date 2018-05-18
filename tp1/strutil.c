@@ -56,10 +56,10 @@ size_t tam_string_join(char* strv[]){
   size_t largo = 0;
   size_t pos = 0;
   while (strv[pos] != NULL) {
-    largo += strlen(strv[pos]);
+    largo += strlen(strv[pos])+1;
     pos++;
   }
-  return largo;
+  return largo+1;
 }
 char* join(char** strv, char sep){
   if(strv == NULL)
@@ -67,16 +67,22 @@ char* join(char** strv, char sep){
   char* string = malloc(tam_string_join(strv) * sizeof(char*));
   if (string == NULL)
     return NULL;
-  size_t pos = 0;
-  while (strv[pos] != NULL){
-    if(pos == 0)
-      strcpy(string,strv[pos]);
-    else
-      strcat(string,strv[pos]);
+  size_t pos = 0 , largo = 0;
+  while(strv[pos] != NULL){
+    size_t i = 0;
+    while(strv[pos][i] != '\0'){
+      string[largo] = strv[pos][i];
+      i++;
+      largo++;
+    }
     pos++;
-    if(strv[pos] != NULL)
-      strncat(string,&sep,sizeof(sep));
+    if(strv[pos] != NULL){
+      string[largo] = sep;
+      largo++;
+    }
   }
+  largo++;
+  string[largo] = '\0';
   return string;
 }
 
