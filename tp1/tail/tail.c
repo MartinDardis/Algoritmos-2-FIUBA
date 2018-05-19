@@ -6,6 +6,7 @@
 #include "cola.h"
 
 #define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
 #define ARG_ESPERADOS 2
 #define ERROR_CANT_ARG -1
 #define ARG_NO_ES_NUMERO -2
