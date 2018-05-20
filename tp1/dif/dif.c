@@ -24,7 +24,7 @@ int main(int argc,char* argv[]){
   }
   FILE* archivo_2 = fopen(argv[2],"r");
   if (!archivo_2){
-    perror("Archivo erroneo");
+    printf(stderr,"Archivo erroneo");
     return ARCHIVO_ERRONEO;
   }
   comparar_archivos(archivo_1,archivo_2);
