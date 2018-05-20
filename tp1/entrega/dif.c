@@ -1,9 +1,10 @@
+#define _POSIX_C_SOURCE 200809L
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#define _POSIX_C_SOURCE 200809L
+
 #define ARG_ESPERADOS 3
 #define ERROR_CANT_ARG -1
 #define ARCHIVO_ERRONEO -2
@@ -13,12 +14,12 @@ char* leer_linea(FILE* archivo);
 
 int main(int argc,char* argv[]){
   if (argc != ARG_ESPERADOS){
-    perror("Cantidad de parametros erronea");
+    printf(stderr,"Cantidad de parametros erronea");
     return ERROR_CANT_ARG;
   }
   FILE* archivo_1 = fopen(argv[1],"r");
   if (!archivo_1){
-    perror("Archivo erroneo");
+    printf(stderr,"Archivo erroneo");
     return ARCHIVO_ERRONEO;
   }
   FILE* archivo_2 = fopen(argv[2],"r");
