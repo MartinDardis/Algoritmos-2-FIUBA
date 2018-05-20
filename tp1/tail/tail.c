@@ -8,8 +8,8 @@
 #include "cola.h"
 
 #define ARG_ESPERADOS 2
-#define ERROR_CANT_ARG -1
-#define ARG_NO_ES_NUMERO -2
+#define ERROR_CANT_ARG 0
+#define ARG_NO_ES_NUMERO 0
 
 
 void imprimir_lineas(void* linea);
@@ -17,12 +17,12 @@ void leer_lineas(cola_t* cola_lineas,size_t cant_a_leer);
 
 int main (int argc,char* argv[]){
   if (argc != ARG_ESPERADOS){
-    perror("Cantidad de parametros erronea");
+    fprintf(stderr,"Cantidad de parametros erronea");
     return ERROR_CANT_ARG;
   }
   size_t cant_a_leer = (size_t) atoi(argv[1]);
   if( cant_a_leer == 0 ){
-    perror("Tipo de parametro incorrecto");
+    fprintf(stderr,"Tipo de parametro incorrecto");
     return ARG_NO_ES_NUMERO;
   }
   cola_t* lineas_a_imprimir = cola_crear();
