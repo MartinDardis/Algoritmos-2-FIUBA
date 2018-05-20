@@ -14,17 +14,17 @@ char* leer_linea(FILE* archivo);
 
 int main(int argc,char* argv[]){
   if (argc != ARG_ESPERADOS){
-    printf(stderr,"Cantidad de parametros erronea");
+    fprintf(stderr,"Cantidad de parametros erronea");
     return ERROR_CANT_ARG;
   }
   FILE* archivo_1 = fopen(argv[1],"r");
   if (!archivo_1){
-    printf(stderr,"Archivo erroneo");
+    fprintf(stderr,"Archivo erroneo");
     return ARCHIVO_ERRONEO;
   }
   FILE* archivo_2 = fopen(argv[2],"r");
   if (!archivo_2){
-    printf(stderr,"Archivo erroneo");
+    fprintf(stderr,"Archivo erroneo");
     return ARCHIVO_ERRONEO;
   }
   comparar_archivos(archivo_1,archivo_2);
