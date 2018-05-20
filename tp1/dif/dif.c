@@ -1,9 +1,10 @@
+#define _POSIX_C_SOURCE 200809L
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#define _POSIX_C_SOURCE 200809L
+
 #define ARG_ESPERADOS 3
 #define ERROR_CANT_ARG -1
 #define ARCHIVO_ERRONEO -2
