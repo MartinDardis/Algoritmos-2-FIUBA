@@ -14,17 +14,17 @@ char* leer_linea(FILE* archivo);
 
 int main(int argc,char* argv[]){
   if (argc != ARG_ESPERADOS){
-    printf(stderr,"Cantidad de parametros erronea");
+    fprintf(stderr,"Cantidad de parametros erronea");
     return ERROR_CANT_ARG;
   }
   FILE* archivo_1 = fopen(argv[1],"r");
   if (!archivo_1){
-    printf(stderr,"Archivo erroneo");
+    fprintf(stderr,"Archivo erroneo");
     return ARCHIVO_ERRONEO;
   }
   FILE* archivo_2 = fopen(argv[2],"r");
   if (!archivo_2){
-    printf(stderr,"Archivo erroneo");
+    fprintf(stderr,"Archivo erroneo");
     return ARCHIVO_ERRONEO;
   }
   comparar_archivos(archivo_1,archivo_2);
@@ -40,7 +40,7 @@ void comparar_archivos(FILE* archivo_1, FILE* archivo_2){
   char* linea_arch_2 = leer_linea(archivo_2);
   while( !feof(archivo_1) && !feof(archivo_2) ){
     if (strcmp(linea_arch_1,linea_arch_2) != 0 ){
-      fprintf(stdout,"Diferencia en linea%i\n< %s---\n> %s",linea,linea_arch_1,linea_arch_2);
+      fprintf(stdout,"Diferencia en linea %i\n< %s---\n> %s",linea,linea_arch_1,linea_arch_2);
     }
     linea++;
     free(linea_arch_1);
@@ -49,13 +49,13 @@ void comparar_archivos(FILE* archivo_1, FILE* archivo_2){
     linea_arch_2 = leer_linea(archivo_2);
   }
   while ( !feof(archivo_1) ){
-    fprintf(stdout,"Diferencia en linea%i\n< %s---\n> %s",linea,linea_arch_1,"");
+    fprintf(stdout,"Diferencia en linea %i\n< %s---\n> %s",linea,linea_arch_1,"");
     free(linea_arch_1);
     linea++;
     linea_arch_1 = leer_linea(archivo_1);
   }
   while ( !feof(archivo_2) ){
-    fprintf(stdout,"Diferencia en linea%i\n< %s---\n> %s",linea,"",linea_arch_2);
+    fprintf(stdout,"Diferencia en linea %i\n< %s---\n> %s",linea,"",linea_arch_2);
     free(linea_arch_2);
     linea++;
     linea_arch_2 = leer_linea(archivo_2);
