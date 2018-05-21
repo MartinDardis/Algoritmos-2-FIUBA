@@ -1,4 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,6 +52,8 @@ bool comprobar_linea(char* linea){
     }
     if (linea[i] == LLAVE_ABIERTA){
     if(!comprobar_llaves(linea,&i))
+      return false;
+    if (linea[i] == CORCHETE_CERRADO || linea[i] == PARENTESIS_CERRADO || linea[i] == LLAVE_CERRADA)
       return false;
     }
   }
