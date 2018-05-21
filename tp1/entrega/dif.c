@@ -11,6 +11,7 @@
 
 void comparar_archivos(FILE* archivo_1,FILE* archivo_2);
 char* leer_linea(FILE* archivo);
+void imprimir_diferencia(int linea,char* archivo_1,char* archivo_2);
 
 int main(int argc,char* argv[]){
   if (argc != ARG_ESPERADOS){
@@ -40,7 +41,7 @@ void comparar_archivos(FILE* archivo_1, FILE* archivo_2){
   char* linea_arch_2 = leer_linea(archivo_2);
   while( !feof(archivo_1) && !feof(archivo_2) ){
     if (strcmp(linea_arch_1,linea_arch_2) != 0 ){
-      fprintf(stdout,"Diferencia en linea %i\n< %s---\n> %s",linea,linea_arch_1,linea_arch_2);
+      imprimir_diferencia(linea,linea_arch_1,linea_arch_2);
     }
     linea++;
     free(linea_arch_1);
@@ -49,13 +50,13 @@ void comparar_archivos(FILE* archivo_1, FILE* archivo_2){
     linea_arch_2 = leer_linea(archivo_2);
   }
   while ( !feof(archivo_1) ){
-    fprintf(stdout,"Diferencia en linea %i\n< %s---\n> %s",linea,linea_arch_1,"");
+    imprimir_diferencia(linea,linea_arch_1,NULL);
     free(linea_arch_1);
     linea++;
     linea_arch_1 = leer_linea(archivo_1);
   }
   while ( !feof(archivo_2) ){
-    fprintf(stdout,"Diferencia en linea %i\n< %s---\n> %s",linea,"",linea_arch_2);
+    imprimir_diferencia(linea,NULL,linea_arch_2);
     free(linea_arch_2);
     linea++;
     linea_arch_2 = leer_linea(archivo_2);
@@ -70,4 +71,19 @@ char* leer_linea(FILE* archivo){
   size_t cant = 0;
   getline(&buffer,&cant,archivo);
   return buffer;
+}
+
+void imprimir_diferencia(int linea,char* archivo_1,char* archivo_2){
+printf("Diferencia en linea %i\n",linea);
+printf("<");
+if(archivo_1)
+  printf(" %s",archivo_1);
+else
+  printf("\n");
+printf("---\n");
+printf(">");
+if(archivo_2)
+  printf(" %s",archivo_2);
+else
+  printf("\n");
 }
