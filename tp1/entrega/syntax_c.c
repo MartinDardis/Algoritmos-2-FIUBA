@@ -41,7 +41,7 @@ bool comprobar_linea(char* linea){
   if (!abiertos)
     return false;
   bool balanceado = true;
-  for(size_t i=0; linea[i]!= '\0' && balanceado; i++){
+  for(size_t i=0; balanceado && linea[i]!= '\0'  ; i++){
     if (linea[i] == LLAVE_ABIERTA || linea[i] == CORCHETE_ABIERTO || linea[i] == PARENTESIS_ABIERTO){
       char* apilar = malloc(sizeof(char));
       if(!apilar)
