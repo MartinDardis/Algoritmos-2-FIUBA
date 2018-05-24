@@ -35,6 +35,8 @@ int main(int argc,char* argv[]){
 }
 
 bool comprobar_linea(char* linea){
+  if (strlen (linea) == 0)
+    return true;
   pila_t* abiertos = pila_crear();
   if (!abiertos)
     return false;
@@ -58,7 +60,7 @@ bool comprobar_linea(char* linea){
     }
     if (linea[i] == APOSTROFE){
       i++;
-      while (linea[i] != APOSTROFE ) {
+      while (linea[i] != APOSTROFE && linea[i] != '\0') {
         i++;
         if(linea[i] == '\0')
           balanceado = false;
