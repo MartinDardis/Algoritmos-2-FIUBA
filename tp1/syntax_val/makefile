@@ -4,9 +4,8 @@ FLAGS_ENTREGA = -g -std=c99 -Wall -Wconversion -Wno-sign-conversion -Werror
 VALGRIND = valgrind --leak-check=full --track-origins=yes --show-reachable=yes
 GDB = gdbgui
 
-build: syntax.c
-	$(CC) $(FLAGS) -c syntax.c
-
+build: syntax_b.c lista.c lista.h
+	$(CC) $(FLAGS) -c syntax_b.c lista.c 
 execute: build
 	$(CC) *.o -o syntax
 
