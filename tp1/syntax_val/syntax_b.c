@@ -21,7 +21,8 @@ bool comprobar_balance (lista_t* caracteres);
 bool enlistar_caracter (char caracter, lista_t* lista);
 void* eliminar_por_error (lista_t* lista);
 void imprimir_resultado(bool estado);
-void eliminar_par(lista_t* lista);
+void eliminar_anidado(lista_t* lista);
+void eliminar_secuencial(lista_t* lista);
 
 int main(int argc,char* argv[]){
     char* buffer = NULL;
@@ -51,7 +52,8 @@ lista_t* buscar_caracteres (char* linea){
   if(strlen(linea) == 0)
     return NULL;
   lista_t* lista = lista_crear();
-  for(size_t i=0; linea[i] != '\0' ; i++){
+  size_t i = 0;
+  while ( linea[i] != '\0' ){
     if(linea[i] == CORCHETE_ABIERTO || linea[i] == CORCHETE_CERRADO){
       if (!enlistar_caracter(linea[i],lista)){
         return eliminar_por_error(lista);
@@ -68,11 +70,18 @@ lista_t* buscar_caracteres (char* linea){
       }
     }
     else if (linea[i] == APOSTROFE){
-        while (linea[i] != APOSTROFE && linea[i] != '\0'){
-          i++;
-        }
+      if (!enlistar_caracter(linea[i],lista))//enlista primer APOSTROFE
+        return eliminar_por_error(lista);
+      i++;
+      while ( linea [i] != APOSTROFE && linea[i] != '\0'){//busca el siguiente
         i++;
       }
+      if(linea[i] == '\0')// si no hay siguiente
+        return eliminar_por_error(lista);
+      if (!enlistar_caracter(linea[i],lista))//enlista el siguiente
+        return eliminar_por_error(lista);
+    }
+    i++;
   }
   return lista;
 }
@@ -94,32 +103,55 @@ bool enlistar_caracter (char caracter,lista_t* lista){
 bool comprobar_balance (lista_t* caracteres){
   bool balanceado = true;
   while ( !lista_esta_vacia (caracteres) && balanceado == true ){
+    lista_iter_t* iterador = lista_iter_crear(caracteres);
+    lista_iter_avanzar(iterador);
     char primero =  *((char*) lista_ver_primero(caracteres));
+    char siguiente = 'v';
+    if (lista_iter_ver_actual(iterador) != NULL)
+      siguiente = *(char*) lista_iter_ver_actual(iterador);
     char ultimo =  *((char*) lista_ver_ultimo(caracteres));
+    if (primero == APOSTROFE){
+      if (siguiente == APOSTROFE)
+        eliminar_secuencial(caracteres);
+      else balanceado = false;
+    }
     if ( primero == CORCHETE_ABIERTO){
-      if ( ultimo == CORCHETE_CERRADO)
-        eliminar_par(caracteres);
+      if (siguiente == CORCHETE_CERRADO)
+        eliminar_secuencial(caracteres);
+      else if ( ultimo == CORCHETE_CERRADO)
+        eliminar_anidado(caracteres);
       else balanceado = false;
     }
     else if ( primero == LLAVE_ABIERTA){
-      if ( ultimo == LLAVE_CERRADA)
-        eliminar_par(caracteres);
+      if ( siguiente == LLAVE_CERRADA)
+          eliminar_secuencial(caracteres);
+      else if ( ultimo == LLAVE_CERRADA)
+        eliminar_anidado(caracteres);
       else balanceado = false;
     }
     else if ( primero == PARENTESIS_ABIERTO){
-      if ( ultimo == PARENTESIS_CERRADO)
-        eliminar_par(caracteres);
+      if (siguiente == PARENTESIS_CERRADO)
+        eliminar_secuencial(caracteres);
+      else if ( ultimo == PARENTESIS_CERRADO)
+        eliminar_anidado(caracteres);
       else balanceado = false;
     }
     else
       balanceado = false;
+  lista_iter_destruir(iterador);
   }
   if (!lista_esta_vacia(caracteres))
     return false;
   return balanceado;
 }
 
-void eliminar_par(lista_t* caracteres){
+void eliminar_secuencial(lista_t* lista){
+  free(lista_borrar_primero(lista));
+  free(lista_borrar_primero(lista));
+  return;
+}
+
+void eliminar_anidado(lista_t* caracteres){
   lista_iter_t* iter = lista_iter_crear(caracteres);
   size_t largo = lista_largo(caracteres);
   for (size_t i=1; i < largo ;i++)
