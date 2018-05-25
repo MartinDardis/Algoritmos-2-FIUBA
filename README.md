@@ -11,7 +11,7 @@ Ej:
 
 ### Como crear un branch?
 
-    git checkout -b "nombre_del_branch
+    git checkout -b "nombre_del_branch"
 
 ### Que hacer antes de empezar a trabajar?
 Traer los posibles cambios en el repo remoto al local
@@ -21,4 +21,5 @@ Traer los posibles cambios en el repo remoto al local
 ### Como Pullear?
 	git add *  ->  git commit -m "..."  ->  git pull
 
-** Nota: El * puede ser cambiado por el nombre de el/los archivos especificos **
+
+**Nota: El * puede ser cambiado por el nombre de el/los archivos especificos**
