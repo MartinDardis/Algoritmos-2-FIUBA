@@ -15,9 +15,11 @@ Ej:
 ### Que hacer antes de empezar a trabajar?
 Traer los posibles cambios en el repo remoto al local
 
-	`git status` && `git pull`
+	git status <--> git pull
 
 ### Como Pullear?
-	`git add *` -> `git commit -m "..."` -> `git pull`
+	git add *  ->  git commit -m "..."  ->  git pull
+
+Nota: El * puede ser cambiado por el nombre de el/los archivos especificos 
 
 
