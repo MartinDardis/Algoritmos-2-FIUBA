@@ -15,7 +15,7 @@ typedef struct abb{
 
 // Primitivas del abb < > ->, me escribi eso por si queria copiar y pegar
 
-nodo_t* nodo_crear(const char *clave, void *dato){
+nodo_t* nodo_crear(const char *clave, void *dato){//OK
     nodo_t* nodo = malloc(sizeof(nodo_t));
     if(!nodo){
         return NULL;
@@ -27,7 +27,7 @@ nodo_t* nodo_crear(const char *clave, void *dato){
     return nodo;
 }
 
-void abb_destruir_recursivo(abb_t *arbol, nodo_t* nodo_actual){
+void abb_destruir_recursivo(abb_t *arbol, nodo_t* nodo_actual){//OK
     if(!nodo_actual){
         return;
     }
@@ -39,7 +39,7 @@ void abb_destruir_recursivo(abb_t *arbol, nodo_t* nodo_actual){
     return;
 }
 
-void* nodo_destruir(abb_t *arbol, nodo_t* nodo){
+void* nodo_destruir(abb_t *arbol, nodo_t* nodo){ //OK
     void* dato = nodo->dato;
     arbol->destruir_dato(nodo->dato);
     free(nodo->clave);
@@ -48,7 +48,7 @@ void* nodo_destruir(abb_t *arbol, nodo_t* nodo){
 }
 
 //
-abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato){
+abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato){  //OK
     abb_t* arbol = malloc(sizeof(abb_t));
     arbol->raiz = NULL;
     arbol->cmp = cmp;
@@ -83,16 +83,17 @@ nodo_t* nodo_buscar_padre_recursivo(abb_t *arbol, nodo_t* nodo_actual, const cha
 }
 
 //devuelve el padre del nodo con la clave buscada (wrapper)
-nodo_t* nodo_buscar_padre(abb_t *arbol, nodo_t* nodo_actual, const char *clave_buscada){
+nodo_t* nodo_buscar_padre(abb_t *arbol, nodo_t* nodo_actual, const char *clave_buscada){ //OK
     bool encontro_padre = false;
-    return nodo_buscar_padre_recursivo(arbol, nodo_actual, clave_buscada, &encontro_padre);
+    nodo_t* nodo = nodo_buscar_padre_recursivo(arbol, nodo_actual, clave_buscada, &encontro_padre);
     if(!encontro_padre){
         return NULL; //por si el buscado es la raiz
     }
+    return nodo;
 }
 
 //
-nodo_t* nodo_buscar(abb_t *arbol, nodo_t* nodo_actual, const char *clave_buscada){
+nodo_t* nodo_buscar(abb_t *arbol, nodo_t* nodo_actual, const char *clave_buscada){//OK
     if(nodo_actual == NULL){
         return NULL;
     }
