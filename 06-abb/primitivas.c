@@ -15,7 +15,7 @@ typedef struct abb{
 /*    Declaracion de Primitivas para funciones internas del abb                          */
 bool remplazar_dato(abb_comparar_clave_t* cmp,nodo_t* padre,const char* clave,void* dato);
 bool insertar_dato(abb_comparar_clave_t* cmp,nodo_t* padre,const char* clave,void* dato);
-void* buscar_y_borrar(abb_comparar_clave_t* cmp,nodo_t* padre,const char* clave);
+void* buscar_y_borrar(abb_comparar_clave_t* cmp,nodo_t* padre,nodo_t* actual,const char* clave_buscada);
 /*****************************************************************************************/
 
 nodo_t* crear_nodo(const char* clave,void* dato){
@@ -81,8 +81,8 @@ bool insertar_dato(abb_comparar_clave_t* cmp,nodo_t* padre,const char* clave,voi
   return true;
 }
 
-void *abb_borrar(abb_t *arbol, const char *clave){
+void* abb_borrar(abb_t *arbol, const char *clave){
   if (!arbol) return NULL;
   if(!abb_pertenece(arbol,clave)) return NULL;
-  return buscar_y_borrar(arbol->cmp,arbol->raiz,clave);
+  return buscar_y_borrar(arbol->cmp,NULL,arbol->raiz,clave);
 }
