@@ -45,11 +45,15 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
     arbol->raiz = crear_nodo(clave,dato);
     if(!arbol->raiz)
       guardo = false;
+    else
+      arbol->cantidad++;
   }
   else if ( abb_pertenece(arbol,clave) )
     guardo = remplazar_dato(arbol->cmp,arbol->raiz,clave,dato);
-  else
+  else{
     guardo = insertar_dato(arbol->raiz,clave,dato);
+    arbol->cantidad++;
+  }
   return guardo;
 }
 
