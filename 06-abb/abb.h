@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "pila.h"
+#include "lista.h"
 
 typedef struct abb abb_t;
 
