@@ -15,4 +15,10 @@ void crear_y_destruir(){
   heap_t* heap = heap_crear(to_strcmp);
   print_test("* Crear un heap",heap != NULL);
   heap_destruir(heap,NULL);
+  char arr = {'a','j','c','b','d','f','e'};	
+  heap = heap_crear_arr(arr,7,to_strcmp);
+  for(int i=0;i<7;i++)
+  	printf("%c",*((char*)heap_desencolar(heap);
+  heap_destruir(heap,NULL);
 }
+
