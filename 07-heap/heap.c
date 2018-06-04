@@ -20,7 +20,7 @@ void heapify(void** arreglo, size_t cantidad, cmp_func_t cmp);
 
 void heap_sort(void** arreglo, size_t cantidad, cmp_func_t cmp){
     heapify(arreglo, cantidad, cmp);
-    while(n > 0){
+    while(cantidad > 0){
         swap(&arreglo[0], &arreglo[cantidad-1]);
         cantidad--;
         downheap(arreglo, cantidad, 0, cmp);
@@ -193,6 +193,6 @@ void downheap(void** arreglo, size_t cantidad, size_t pos_padre, cmp_func_t cmp)
 }
 
 void heapify(void** arreglo, size_t cantidad, cmp_func_t cmp){
-    for(int i = cantidad, )
-    downheap(arreglo, cantidad, cantidad/2, cmp);
+    for(size_t i = cantidad; i > 0; i-- )
+    downheap(arreglo,i,i/2, cmp);
 }
