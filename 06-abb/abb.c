@@ -1,22 +1,35 @@
-typedef struct nodo{
+#define _POSIX_C_SOURCE 200809L //strdup
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include "pila.h"
+
+typedef struct abb abb_t;
+
+typedef int (*abb_comparar_clave_t) (const char *, const char *);
+typedef void (*abb_destruir_dato_t) (void *);
+
+typedef struct nodo_abb{
     char* clave;
     void* dato;
-    nodo_t* hijo_izq;
-    nodo_t* hijo_der;
-} nodo_t;
+    struct nodo_abb* hijo_izq;
+    struct nodo_abb* hijo_der;
+} nodo_abb_t;
 
 typedef struct abb{
-    nodo_t* raiz;
+    nodo_abb_t* raiz;
     abb_comparar_clave_t cmp;
     abb_destruir_dato_t destruir_dato;
-    size_t cant;
+    size_t cantidad;
 } abb_t;
 
+// Primitivas del abb
 
-// Primitivas del abb < > ->, me escribi eso por si queria copiar y pegar
-
-nodo_t* nodo_crear(const char *clave, void *dato){//OK
-    nodo_t* nodo = malloc(sizeof(nodo_t));
+/* Crea un nodo del arbol binario de busqueda con la clave y el dato recibidos
+ */
+nodo_abb_t* nodo_abb_crear(const char *clave, void *dato){
+    nodo_abb_t* nodo = malloc(sizeof(nodo_abb_t));
     if(!nodo){
         return NULL;
     }
@@ -27,235 +40,247 @@ nodo_t* nodo_crear(const char *clave, void *dato){//OK
     return nodo;
 }
 
-void abb_destruir_recursivo(abb_t *arbol, nodo_t* nodo_actual){//OK
-    if(!nodo_actual){
-        return;
-    }
-    abb_destruir_recursivo(arbol, nodo_actual->hijo_izq);
-    abb_destruir_recursivo(arbol, nodo_actual->hijo_der);
-    arbol->destruir_dato(nodo_actual->dato);
-    free(nodo_actual->clave);
-    free(nodo_actual);
-    return;
-}
-
-void* nodo_destruir(abb_t *arbol, nodo_t* nodo){ //OK
+/* Destruye un nodo de un arbol binario de busqueda, si el arbol tiene una
+ * funcion para destruir datos la llama.
+ * Pre: El arbol existe
+ */
+void* nodo_abb_destruir(abb_t *arbol, nodo_abb_t* nodo){
     void* dato = nodo->dato;
-    arbol->destruir_dato(nodo->dato);
+    if(arbol->destruir_dato){
+        arbol->destruir_dato(nodo->dato);
+    }
     free(nodo->clave);
     free(nodo);
     return dato;
 }
 
-//
-abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato){  //OK
+/* Crea un arbol binario de busqueda
+ * Pre: Recibe una funcion de comparacion que recive 2 strings y devuelve 0 si ambas son iguales
+ * un numero negativo si la primera es menor a la segunda, y un numero positivo si la primera es
+ * mayor a la segunda. Recibe la funcion que destruye al dato, o NULL si no se debe destruir
+ */
+abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato){
     abb_t* arbol = malloc(sizeof(abb_t));
     arbol->raiz = NULL;
     arbol->cmp = cmp;
     arbol->destruir_dato = destruir_dato;
-    arbol->cant = 0;
+    arbol->cantidad = 0;
     return arbol;
 }
 
-nodo_t* nodo_buscar_padre_recursivo(abb_t *arbol, nodo_t* nodo_actual, const char *clave_buscada, bool* encontro_padre){
-    if(nodo_actual == NULL){
-        return NULL;
+/* Devuelve recursivamente a cada nodo del arbol binario de busqueda, en un
+ * recorrido posorder
+ * Pre: El arbol existe
+ */
+void abb_destruir_recursivo(abb_t *arbol, nodo_abb_t* nodo_actual){
+    if(!nodo_actual){
+        return;
     }
-
-    int comparacion = arbol->cpm(clave_buscada, nodo_actual->clave);
-    if(comparacion == 0){
-        return nodo_actual;
-    }
-
-    if(comparacion < 0){
-        nodo_t* nodo_buscado = nodo_buscar(arbol, nodo_actual->hijo_izq, clave_buscada);
-
-    }
-    if(comparacion > 0){
-        nodo_t* nodo_buscado = nodo_buscar(arbol, nodo_actual->hijo_izq, clave_buscada);
-    }
-
-    if(!(*encontro_padre)){
-        *encontro_padre = true;
-        return nodo_actual;
-    }
-    return nodo_buscado;
+    abb_destruir_recursivo(arbol, nodo_actual->hijo_izq);
+    abb_destruir_recursivo(arbol, nodo_actual->hijo_der);
+    nodo_abb_destruir(arbol, nodo_actual);
+    return;
 }
 
-//devuelve el padre del nodo con la clave buscada (wrapper)
-nodo_t* nodo_buscar_padre(abb_t *arbol, nodo_t* nodo_actual, const char *clave_buscada){ //OK
-    bool encontro_padre = false;
-    nodo_t* nodo = nodo_buscar_padre_recursivo(arbol, nodo_actual, clave_buscada, &encontro_padre);
-    if(!encontro_padre){
-        return NULL; //por si el buscado es la raiz
-    }
-    return nodo;
+/* Destruye un arbol binario de busqueda, y todos sus nodos
+ * Pre: El arbol existe
+ */
+void abb_destruir(abb_t *arbol){
+    abb_destruir_recursivo(arbol, arbol->raiz);
+    free(arbol);
 }
 
-//
-nodo_t* nodo_buscar(abb_t *arbol, nodo_t* nodo_actual, const char *clave_buscada){//OK
-    if(nodo_actual == NULL){
-        return NULL;
-    }
-    int comparacion = arbol->cpm(clave_buscada, nodo_actual->clave);
-    if(comparacion < 0){
-        return nodo_buscar(arbol, nodo_actual->hijo_izq, clave_buscada);
-    }
-    if(comparacion > 0){
-        return nodo_buscar(arbol, nodo_actual->hijo_izq, clave_buscada);
+/* Busca al nodo que contiene la clave recibida.
+ * Devuelve al nodo, o NULL si no lo encuentra, y actualiza la
+ * posicion del padre de ese nodo
+ * Pre: El arbol existe
+ */
+nodo_abb_t* nodo_buscar(const abb_t *arbol, nodo_abb_t** padre, const char *clave_buscada){
+    *padre = NULL;
+    nodo_abb_t* nodo_actual = arbol->raiz;
+
+    bool encontro = false;
+    int comparacion;
+    while((nodo_actual) && (!encontro)){
+        comparacion = arbol->cmp(clave_buscada, nodo_actual->clave);
+        if(comparacion == 0){
+            encontro = true;
+        } else {
+            *padre = nodo_actual;
+            if(comparacion < 0){
+                nodo_actual = nodo_actual->hijo_izq;
+            } else {
+                nodo_actual = nodo_actual->hijo_der;
+            }
+        }
     }
     return nodo_actual;
 }
 
-//
+/* Reemplaza el dato contenido en un nodo, llamando a la funcion de destruir
+ * dato si es que el arbol tiene una
+ * Pre: El arbol existe
+ */
+void reemplazar_dato(abb_t* arbol, nodo_abb_t* nodo, void* dato){
+    if(arbol->destruir_dato){
+        arbol->destruir_dato(nodo->dato);
+    }
+    nodo->dato = dato;
+}
+
+/* Reemplaza el dato y la clave de 2 nodos recibidos
+ * Pre: Ambos nodos existen
+ */
+void reemplazar_nodo(nodo_abb_t* nodo1, nodo_abb_t* nodo2){
+    char* clave_aux = nodo1->clave;
+    void* dato_aux = nodo1->dato;
+    nodo1->clave = nodo2->clave;
+    nodo1->dato = nodo2->dato;
+    nodo2->clave = clave_aux;
+    nodo2->dato = dato_aux;
+}
+
+/* Guarda el conjunto de clave y dato en un nuevo nodo del arbol
+ * Si la clave ya esta en el arbol reemplaza el dato. Si no esta, lo guarda en un nuevo nodo.
+ * Devuelve true si guarda el valor, o false si no lo hace
+ * (si no hay arbol o nu puedo alocar memora).
+ * Pre: El arbol existe
+ */
 bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
-    nodo_t* padre = nodo_buscar_padre(arbol, arbol->raiz, clave);
-    if(!padre){
-        return false;
+    nodo_abb_t* padre = NULL;
+    nodo_abb_t* nodo = nodo_buscar(arbol, &padre, clave);
+
+    if(nodo){
+        reemplazar_dato(arbol, nodo, dato);
+        return true;
     }
 
-    int comparacion = cmp(clave, padre->clave);
+    if(!padre){
+        arbol->raiz = nodo_abb_crear(clave, dato);
+        if(!arbol->raiz){
+            return false;
+        }
+        arbol->cantidad++;
+        return true;
+    }
+
+    int comparacion = arbol->cmp(clave, padre->clave);
     if(comparacion < 0){
-        if(cmp(clave, padre->hijo_izq->clave) == 0){
-            arbol->destruir_dato(padre->hijo_izq->dato);
-            padre->hijo_izq->dato = dato;
-        } else {
-            padre->hijo_izq = nodo_crear(clave, dato);
-            if(!padre->hijo_izq){
-                return false;
-            }
+        padre->hijo_izq = nodo_abb_crear(clave, dato);
+        if(!padre->hijo_izq){
+            return false;
         }
+        arbol->cantidad++;
     } else {
-        if(cmp(clave, padre->hijo_der->clave) == 0){
-            arbol->destruir_dato(padre->hijo_der->dato);
-            padre->hijo_der->dato = dato;
-        } else {
-            padre->hijo_der = nodo_crear(clave, dato);
-            if(!padre->hijo_der){
-                return false;
-            }
+        padre->hijo_der = nodo_abb_crear(clave, dato);
+        if(!padre->hijo_der){
+            return false;
         }
+        arbol->cantidad++;
     }
     return true;
 }
 
-int cantidad_de_hijos(nodo_t* nodo){
-    int cantidad = 0;
-    if(!nodo){
-        return 0;
-    }
-
-    if(nodo->hijo_izq){
-        cantidad++;
-    }
-    if(nodo->hijo_der){
-        cantidad++;
-    }
-    return cantidad;
-}
-
-void* abb_borrar_nodo_sin_hijos(abb_t *arbol, const char *clave, nodo_t* nodo_a_borrar, nodo_t* padre){
+/* Destruye un nodo sin hijos y devuelve su dato
+ * Pre: el arbol existe, la clabe pertenece al nodo a borrar, el nodo a borrar existe
+ * y no tiene ningun hijo
+ */
+void* abb_borrar_nodo_sin_hijos(abb_t *arbol, const char *clave, nodo_abb_t* nodo_a_borrar, nodo_abb_t* padre){
     if(!padre){ //borro la raiz
         arbol->raiz = NULL;
-        return nodo_destruir(arbol, nodo_a_borrar);
+        return nodo_abb_destruir(arbol, nodo_a_borrar);
     }
 
-    if(cmp(clave, padre->hijo_izq->clave) == 0){
+    if(padre->hijo_izq == nodo_a_borrar){
         padre->hijo_izq = NULL;
     } else {
         padre->hijo_der = NULL;
     }
 
-    return nodo_destruir(arbol, nodo_a_borrar);
+    return nodo_abb_destruir(arbol, nodo_a_borrar);
 }
 
-void* abb_borrar_nodo_con_1_hijo(abb_t *arbol, const char *clave, nodo_t* nodo_a_borrar, nodo_t* padre){
+/* Destruye un nodo con 1 hijo y devuelve su dato
+ * Pre: el arbol existe, la clabe pertenece al nodo a borrar, el nodo a borrar existe
+ * y tiene 1 solo hijo
+ */
+void* abb_borrar_nodo_con_1_hijo(abb_t *arbol, const char *clave, nodo_abb_t* nodo_a_borrar, nodo_abb_t* padre){
     if(!padre){ //borro la raiz
-        if(nodo->hijo_izq != NULL){
-            arbol->raiz = nodo->hijo_izq;
+        if(nodo_a_borrar->hijo_izq != NULL){
+            arbol->raiz = nodo_a_borrar->hijo_izq;
         } else {
-            arbol->raiz = nodo->hijo_der;
+            arbol->raiz = nodo_a_borrar->hijo_der;
         }
-        return nodo_destruir(arbol, nodo_a_borrar);
+        return nodo_abb_destruir(arbol, nodo_a_borrar);
     }
 
-    if(nodo->hijo_izq != NULL){
-        if(cmp(clave, padre->hijo_izq->clave) == 0){
+    if(padre->hijo_izq == nodo_a_borrar){
+        if(nodo_a_borrar->hijo_izq){
             padre->hijo_izq = nodo_a_borrar->hijo_izq;
         } else {
-            padre->hijo_der = nodo_a_borrar->hijo_izq;
-        }
-    } else {
-        if(cmp(clave, padre->hijo_izq->clave) == 0){
             padre->hijo_izq = nodo_a_borrar->hijo_der;
+        }
+    } else{
+        if(nodo_a_borrar->hijo_izq){
+            padre->hijo_der = nodo_a_borrar->hijo_izq;
         } else {
             padre->hijo_der = nodo_a_borrar->hijo_der;
         }
     }
-    return nodo_destruir(arbol, nodo_a_borrar);
+    return nodo_abb_destruir(arbol, nodo_a_borrar);
 }
 
-nodo_t* buscar_reemplazante(abb_t *arbol, const char *clave, nodo_t* nodo_a_borrar, nodo_t* padre_del_reemplazante){
-    nodo_t* nodo_actual = nodo_a_borrar->hijo_der;
-    padre_del_reemplazante = nodo_a_borrar;
-
-    while(nodo_actual->hijo_izq){
-        padre_del_reemplazante = nodo_actual;
-        nodo_actual = nodo_actual->hijo_izq;
+/* Destruye un nodo con 2 hijos y devuelve su dato
+ * Pre: el arbol existe, la clabe pertenece al nodo a borrar, el nodo a borrar existe
+ * y tiene 2 hijos
+ */
+void* abb_borrar_nodo_con_2_hijos(abb_t *arbol, const char *clave, nodo_abb_t* nodo_a_borrar, nodo_abb_t* padre){
+    nodo_abb_t* padre_del_reemplazante = nodo_a_borrar;
+    nodo_abb_t* reemplazante = (nodo_a_borrar->hijo_der);
+    while(reemplazante->hijo_izq){
+        padre_del_reemplazante = reemplazante;
+        reemplazante = reemplazante->hijo_izq;
     }
 
-    return nodo_actual;
-}
-
-void* abb_borrar_nodo_con_2_hijos(abb_t *arbol, const char *clave, nodo_t* nodo_a_borrar, nodo_t* padre){
-    nodo_t* padre_del_reemplazante;
-    nodo_t* reemplazante = buscar_reemplazante (arbol, clave, nodo_a_borrar, padre_del_reemplazante);
-    //no hay caso donde no exista el reemplazante o su padre
-
-    char* clave_nueva = reemplazante->clave;
-    int hijos_del_reemplazante = cantidad_de_hijos(reemplazante); //para no llamar a abb_borrar y que lo busque de nuevo
-    if(hijos_del_reemplazante == 1){
-        void* dato_nuevo = abb_borrar_nodo_con_1_hijo(arbol, clave, reemplazante, padre_del_reemplazante);
+    reemplazar_nodo(nodo_a_borrar, reemplazante);
+    if(reemplazante->hijo_der){
+        return  abb_borrar_nodo_con_1_hijo(arbol, clave, reemplazante, padre_del_reemplazante);
     } else {
-        void* dato_nuevo = abb_borrar_nodo_sin_hijos(arbol, clave, reemplazante, padre_del_reemplazante);
+        return  abb_borrar_nodo_sin_hijos(arbol, clave, reemplazante, padre_del_reemplazante);
     }
-
-    free(nodo_a_borrar->clave);
-    void* dato_auxiliar = nodo_a_borrar->dato;
-
-    nodo_a_borrar->clave = clave_nueva;
-    nodo_a_borrar->dato = dato_nuevo;
-
-    return nodo_auxiliar;
 }
 
-//
+/* Devuelve el dato perteneciente a la clave y elimina el conjunto de clave y dato del arbol
+ * Si esa clave no esta guardada en el arbol devuelve NULL, si lo esta elimina el nodo
+ * y devuelve el dato que contiene.
+ * Pre: El arbol existe
+ */
 void *abb_borrar(abb_t *arbol, const char *clave){
-    nodo_t* padre = nodo_buscar_padre(arbol, arbol->raiz, clave);
-    if(!padre){
-        nodo_t* nodo_a_borrar = nodo_buscar(arbol, arbol->raiz, clave);
-    } else {
-        nodo_t* nodo_a_borrar = nodo_buscar(arbol, raiz, clave);
-    }
+    nodo_abb_t* padre = NULL;
+    nodo_abb_t* nodo_a_borrar = nodo_buscar(arbol, &padre, clave);
     if(!nodo_a_borrar){
         return NULL;
     }
 
-    arbol->cantidad++;
-    int cantidad_de_hijos = cantidad_de_hijos(nodo_a_borrar);
+    arbol->cantidad--;
 
-    if(cantidad_de_hijos == 0){
+    if (!nodo_a_borrar->hijo_izq && !nodo_a_borrar->hijo_der){
         return abb_borrar_nodo_sin_hijos(arbol, clave, nodo_a_borrar, padre);
     }
-    if (cantidad_de_hijos == 1){
+    if (!nodo_a_borrar->hijo_izq || !nodo_a_borrar->hijo_der){
         return abb_borrar_nodo_con_1_hijo(arbol, clave, nodo_a_borrar, padre);
     }
     return abb_borrar_nodo_con_2_hijos(arbol, clave, nodo_a_borrar, padre);
 }
 
-//
+/* Devuelve el dato perteneciente a la clave en el arbol
+ * Si esa clave no esta guardada en el arbol devuelve NULL, si lo esta devuelve
+ * el dato que contiene, sin eliminar el nodo.
+ * Pre: El arbol existe
+ */
 void *abb_obtener(const abb_t *arbol, const char *clave){
-    nodo_t* nodo = nodo_buscar(arbol, arbol->raiz, clave);
+    nodo_abb_t* padre = NULL;
+    nodo_abb_t* nodo = nodo_buscar(arbol, &padre, clave);
     if(nodo == NULL){
         return NULL;
     }
@@ -263,33 +288,30 @@ void *abb_obtener(const abb_t *arbol, const char *clave){
     return nodo->dato;
 }
 
-//
+/* Devuelve true si la clave esta guardada en el arbol, o false si no lo esta
+ * Pre: El arbol existe
+ */
 bool abb_pertenece(const abb_t *arbol, const char *clave){
-    return nodo_buscar(arbol, arbol->raiz, clave) != NULL;
+    nodo_abb_t* padre = NULL;
+    return nodo_buscar(arbol, &padre, clave) != NULL;
 }
 
-//
+/* Devuelve la cantidad de claves que estan guardadas en el arbol
+ * Pre: El arbol existe
+ */
 size_t abb_cantidad(abb_t *arbol){
     return arbol->cantidad;
 }
 
-void abb_destruir_recursivo(abb_t *arbol, nodo_t* nodo_actual){
-    if(!nodo_actual){
-        return;
-    }
-    abb_destruir_recursivo(arbol, nodo_actual->hijo_izq);
-    abb_destruir_recursivo(arbol, nodo_actual->hijo_der);
-    nodo_destruir(arbol, nodo_actual);
-    return;
-}
-
-//
-void abb_destruir(abb_t *arbol){
-    abb_destruir_recursivo(arbol, arbol->raiz);
-}
 
 //iterador interno
-void abb_in_order_recursivo(nodo_t* nodo, bool visitar(const char *, void *, void *), void *extra, bool* iterar){
+
+/* Llama a una funcion visitar para todos los nodos del arbol en un recorriido
+ * ordenado segun la funcion de comparacion. Se detiene si la funcion visitar
+ * devuelve false.
+ * Pre: El arbol existe
+ */
+void abb_in_order_recursivo(nodo_abb_t* nodo, bool visitar(const char *, void *, void *), void *extra, bool* iterar){
     if(!nodo){
         return;
     }
@@ -305,23 +327,28 @@ void abb_in_order_recursivo(nodo_t* nodo, bool visitar(const char *, void *, voi
     return;
 }
 
+/* Llama a una funcion visitar para todos los nodos del arbol en un recorriido
+ * ordenado segun la funcion de comparacion. Se detiene si la funcion visitar
+ * devuelve false.
+ * Pre: El arbol existe
+ */
 void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra){
     bool iterar = true;
-    return abb_in_order_recursivo(arbol->raiz, visitar, extra, &iterar);
+    abb_in_order_recursivo(arbol->raiz, visitar, extra, &iterar);
 }
+
 
 //iterador externo
 
 typedef struct abb_iter{
-    abb_t* arbol;
+    const abb_t* arbol;
     pila_t* pila;
 }abb_iter_t;
 
-void abb_iter_in_destruir(abb_iter_t* iter){
-    free(iter->pila);
-    free(iter);
-}
-
+/* Crea un iterador externo del arbol binario, que recorre de forma ordenada segun
+ * la funcion de comparacion.
+ * Pre: El arbol existe
+ */
 abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
     abb_iter_t* iter = malloc(sizeof(abb_iter_t));
     if(!iter){
@@ -334,7 +361,7 @@ abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
     }
 
     iter->arbol = arbol;
-    nodo_t* nodo_actual = iter->arbol->raiz;
+    nodo_abb_t* nodo_actual = iter->arbol->raiz;
     while(nodo_actual){
         pila_apilar(iter->pila, nodo_actual);
         nodo_actual = nodo_actual->hijo_izq;
@@ -342,8 +369,11 @@ abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
     return iter;
 }
 
+/* Avanza a la siguiente posicion en un recorrido ordenado segun la funcion de comparacion.
+ * Pre: El iterador externo existe
+ */
 bool abb_iter_in_avanzar(abb_iter_t *iter){
-    nodo_t* nodo_actual = pila_desapilar(iter->pila);
+    nodo_abb_t* nodo_actual = pila_desapilar(iter->pila);
     if(!nodo_actual){
         return false;
     }
@@ -356,8 +386,11 @@ bool abb_iter_in_avanzar(abb_iter_t *iter){
     return true;
 }
 
+/* Devuelve la clave del nodo actual del arbol, o NULL si no hay nodo actual
+ * Pre: El iterador externo existe
+ */
 const char *abb_iter_in_ver_actual(const abb_iter_t *iter){
-    nodo_t* nodo_actual = pila_ver_tope(iter->pila);
+    nodo_abb_t* nodo_actual = pila_ver_tope(iter->pila);
     if(!nodo_actual){
         return NULL;
     }
@@ -365,6 +398,17 @@ const char *abb_iter_in_ver_actual(const abb_iter_t *iter){
     return nodo_actual->clave;
 }
 
+/* Devuelve true si el iterador ya finalizo el recorrido, o false en caso contrario
+ * Pre: El iterador externo existe
+ */
 bool abb_iter_in_al_final(const abb_iter_t *iter){
     return pila_esta_vacia(iter->pila);
+}
+
+/* Destruye al iterador externo
+ * Pre: El iterador externo existe
+ */
+void abb_iter_in_destruir(abb_iter_t* iter){
+    pila_destruir(iter->pila);
+    free(iter);
 }
