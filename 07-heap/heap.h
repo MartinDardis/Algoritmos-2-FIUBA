@@ -1,8 +1,12 @@
 #ifndef HEAP_H
 #define HEAP_H
 
+#define _POSIX_C_SOURCE 200809L
+#include<stdio.h>
+#include<stdlib.h>
 #include <stdbool.h>  /* bool */
 #include <stddef.h>	  /* size_t */
+
 
 /* Prototipo de función de comparación que se le pasa como parámetro a las
  * diversas funciones del heap.
@@ -86,4 +90,3 @@ void *heap_desencolar(heap_t *heap);
 void pruebas_heap_alumno(void);
 
 #endif // HEAP_H
-
