@@ -266,12 +266,12 @@ static void prueba_abb_valor_null()
 }
 
 static void prueba_abb_volumen(size_t largo, bool debug){
-    if(largo > 370099){
-        print_test("El largo es muy grande, use un largo menor o igual a 370099", false);
+    if(largo > 5000){
+        print_test("El largo es muy grande, use un largo menor o igual a 5000", false);
         return;
     }
 
-    abb_t* abb = abb_crear(strcmp, free);
+    abb_t* abb = abb_crear(strcmp, NULL);
 
     char* claves[largo];
 
@@ -310,12 +310,13 @@ static void prueba_abb_volumen(size_t largo, bool debug){
     }
 
     free(linea);
+    fclose(archivo);
 
     if (debug) print_test("Prueba abb almacenar muchos elementos", ok);
     if (debug) print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb) == contador_de_nodos);
 
     /* Verifica que devuelva los valores correctos */
-    for (size_t i = 0; i < largo; i++) {
+    for (i = 0; i < largo; i++) {
         ok = abb_pertenece(abb, claves[i]);
         if (!ok) break;
         ok = abb_obtener(abb, claves[i]) == valores[i];
@@ -326,7 +327,7 @@ static void prueba_abb_volumen(size_t largo, bool debug){
     if (debug) print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb) == largo);
 
     /* Verifica que borre y devuelva los valores correctos */
-    for (size_t i = 0; i < largo; i++) {
+    for (i = 0; i < largo; i++) {
         if(abb_borrar(abb, claves[i]) == valores[i]){
             contador_de_nodos--;
         }
@@ -341,14 +342,18 @@ static void prueba_abb_volumen(size_t largo, bool debug){
 
     /* Inserta 'largo' parejas en el abb */
     ok = true;
-    for (size_t i = 0; i < largo; i++) {
+    for (i = 0; i < largo; i++) {
         ok = abb_guardar(abb, claves[i], valores[i]);
         if (!ok) break;
+    }
+    if (debug) print_test("Prueba abb borrar muchos elementos", ok);
+
+    for (i = 0; i < largo; i++) {
+        free(claves[i]);
     }
 
     /* Destruye el abb - debería liberar los enteros */
     abb_destruir(abb);
-
 }
 
 static ssize_t buscar(const char* clave, char* claves[], size_t largo)
@@ -479,9 +484,7 @@ static void prueba_abb_iterar_volumen(size_t largo)
  *                        FUNCIÓN PRINCIPAL
  * *****************************************************************/
 
-
-int main()
-{
+int main(){
     /* Ejecuta todas las pruebas unitarias. */
     prueba_crear_abb_vacio();
     prueba_iterar_abb_vacio();
@@ -491,10 +494,11 @@ int main()
     prueba_abb_borrar();
     prueba_abb_clave_vacia();
     prueba_abb_valor_null();
-    prueba_abb_volumen(50, true);
     prueba_abb_volumen(500, true);
+    prueba_abb_volumen(5000, true);
     prueba_abb_iterar();
-    prueba_abb_iterar_volumen(1);
+    prueba_abb_iterar_volumen(500);
+    prueba_abb_iterar_volumen(5000);
 }
 
 void pruebas_volumen(size_t largo)
