@@ -181,10 +181,10 @@ void downheap(void** arreglo, size_t cantidad, size_t pos_padre, cmp_func_t cmp)
     size_t hijo_izq = (2*pos_padre)+1;
     size_t hijo_der = (2*pos_padre)+2;
     size_t pos_max = pos_padre;
-    if((hijo_izq < cantidad) && (cmp(arreglo[hijo_izq], arreglo[pos_padre]) > 0)){
+    if((hijo_izq < cantidad) && (cmp(arreglo[hijo_izq], arreglo[pos_max]) > 0)){
         pos_max = hijo_izq;
     }
-    if((hijo_der < cantidad) && (cmp(arreglo[hijo_der], arreglo[pos_padre]) > 0)){
+    if((hijo_der < cantidad) && (cmp(arreglo[hijo_der], arreglo[pos_max]) > 0)){
         pos_max = hijo_der;
     }
     if(pos_padre == pos_max){
@@ -195,7 +195,7 @@ void downheap(void** arreglo, size_t cantidad, size_t pos_padre, cmp_func_t cmp)
 }
 
 void heapify(void** arreglo, size_t cantidad, cmp_func_t cmp){
-    for(size_t i = cantidad; i > 0; i--){
-        downheap(arreglo, i, i, cmp);
+    for(int i = (int)cantidad; i >= 0; i--){
+        downheap(arreglo, cantidad, (size_t)i, cmp);
     }
 }
