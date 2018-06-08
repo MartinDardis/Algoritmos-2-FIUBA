@@ -2,8 +2,8 @@
 #define HEAP_H
 
 #define _POSIX_C_SOURCE 200809L
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>  /* bool */
 #include <stddef.h>	  /* size_t */
 

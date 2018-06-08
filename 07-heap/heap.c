@@ -1,4 +1,5 @@
 #include "heap.h"
+#include <stdlib.h>
 
 #define TAM_INICIAL 10
 
@@ -115,7 +116,7 @@ void* heap_ver_max(const heap_t* heap){
 }
 
 void *heap_desencolar(heap_t *heap){
-    if(!heap){
+    if(!heap  || heap_esta_vacio(heap)){
         return NULL;
     }
 
