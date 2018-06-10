@@ -1,12 +1,17 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include "testing.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "heap.h"
 
-void pruebas_heap_alumno(void);
+
+
 
 /* ******************************************************************
  *                        PROGRAMA PRINCIPAL
  * *****************************************************************/
+
 
 int main(int argc, char *argv[])
 {
