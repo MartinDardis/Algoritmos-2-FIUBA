@@ -26,7 +26,7 @@ int main (int argc,char* argv[]){
     fprintf(stderr, "%s\n",PARAM_INVALIDO);
       return ERROR;
   }
-  char** last_file = NULL;
+  char* last_file = NULL;
   bool error_command = false;
   char* buffer = NULL;
   size_t size = 0;

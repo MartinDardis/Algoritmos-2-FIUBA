@@ -4,10 +4,10 @@
 
 
 typedef struct log{
-  char* ip;
-  char* fecha;
-  char* metodo;
-  char* url;
+  char ip[20];
+  char fecha[30];
+  char metodo[5];
+  char url[145];
 }log_t;
 
 typedef struct adhoc{
@@ -15,7 +15,7 @@ typedef struct adhoc{
   log_t* data;
 }adhoc_t;
 /************************* FUNCIONES DE COMPARACION***************************/
-int line_cmp (void* a,void*b){
+int line_cmp (const void* a,const void*b){
   int resultado;
   resultado = strcmp(((log_t*)a)->fecha , ((log_t*)b)->fecha);
   if (resultado == 0){
@@ -26,7 +26,7 @@ int line_cmp (void* a,void*b){
   }
   return resultado;
 }
-int heap_cmp (void* a,void*b){
+int heap_cmp (const void* a,const void*b){
   log_t* left = ((adhoc_t*)a)->data;
   log_t* right = ((adhoc_t*)b)->data;
   int resultado;
@@ -45,7 +45,7 @@ int heap_cmp (void* a,void*b){
 /************************* Primitivas internas *******************************/
 bool divide_and_sort(FILE* input,size_t max_lines,size_t* parts);
 log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines);
-bool save_lines(log_t* lines,size_t part_num,size_t top);
+bool save_lines(log_t** lines,size_t part_file_num,size_t top);
 FILE* create_part_file(size_t part);
 void free_lines(log_t**lines,size_t top);
 bool merge_files(FILE* output,size_t num_parts);
@@ -62,7 +62,7 @@ bool ordenar_archivo(const char* input_file,const char* output_file,const size_t
   size_t num_parts = 0;
   error = divide_and_sort(input,lines_in_parts,&num_parts);
   error = merge_files(output,num_parts);
-  //system("rm *.part");
+  system("rm *.part");
   fclose(input);
   fclose(output);
   return !error;
@@ -73,11 +73,11 @@ bool divide_and_sort(FILE* input,size_t max_lines,size_t* parts){
     size_t total_read_lines = 0;
     log_t** lines = read_lines(input,max_lines,&total_read_lines);
     if(!lines) return false;
-    heap_sort(lines,total_read_lines,line_cmp);
+    heap_sort((void**)lines,total_read_lines,line_cmp);
     bool save = save_lines(lines,*parts,total_read_lines);
     if(!save) return false;
     free_lines(lines,total_read_lines);
-    *(parts)++;
+    (*parts)++;
   }
   return true;
 }
@@ -85,15 +85,15 @@ log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
   log_t** logs = malloc(sizeof(log_t*) * max_lines);
   char* buffer = NULL;
   size_t cant = 0;
-  size_t i=0;
-  for(i; i < max_lines && !feof(input);i++){
+  size_t i;
+  for(i = 0; i < max_lines && !feof(input);i++){
     if(getline(&buffer,&cant,input)>0){
       char** line = split(buffer,'\t');
       logs[i] = malloc(sizeof(log_t));
-      logs[i]->ip = strdup(line[0]);
-      logs[i]->fecha = strdup(line[1]);
-      logs[i]->metodo = strdup(line[2]);
-      logs[i]->url = strdup(line[3]);
+      strcpy(logs[i]->ip,line[0]);
+      strcpy(logs[i]->fecha,line[1]);
+      strcpy(logs[i]->metodo,line[2]);
+      strcpy(logs[i]->url,line[3]);
       free_strv(line);
       free(buffer);
       buffer = NULL;
@@ -101,11 +101,11 @@ log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
     }
     else i--;
   }
-  *(read_lines) = i;
+  (*read_lines) = i;
   return logs;
 }
-bool save_lines(log_t* lines,size_t part_num,size_t top){
-  FILE* part_file = create_part_file(part_num);
+bool save_lines(log_t** lines,size_t part_file_num,size_t top){
+  FILE* part_file = create_part_file(part_file_num);
   if(!part_file) return false;
   for(size_t i=0;i<top;i++){
     fwrite(&lines[i],sizeof(log_t),1,part_file);
@@ -115,16 +115,12 @@ bool save_lines(log_t* lines,size_t part_num,size_t top){
 }
 FILE* create_part_file(size_t part){
   char file_name[30];
-  sprintf(file_name,"%i.part",part);
+  sprintf(file_name,"%i.part",(int)part);
   FILE* file = fopen(file_name,"w");
   return file;
 }
 void free_lines(log_t**lines,size_t top){
   for(size_t i = 0; i<top;i++){
-    free(lines[i]->ip);
-    free(lines[i]->fecha);
-    free(lines[i]->metodo);
-    free(lines[i]->url);
     free(lines[i]);
   }
     free(lines);
@@ -146,7 +142,7 @@ bool merge_files(FILE* output,size_t num_parts){
 bool open_part_files(FILE* files [],size_t num_parts){
   for(size_t i=0 ; i<num_parts;i++){
     char file_name[30];
-    sprintf(file_name,"%i.part",i);
+    sprintf(file_name,"%i.part",(int)i);
     files[i] = fopen(file_name,"r");
     if (!files[i]) return false;
   }
@@ -172,14 +168,11 @@ bool write_out(heap_t* out_heap,FILE* output,FILE* files[],size_t num_parts){
     adhoc_t* to_save = heap_desencolar(out_heap);
     log_t* data_to_save = to_save->data;
     fprintf(output, "%s\t",data_to_save->ip);
-    //free(data_to_save->ip);
     fprintf(output, "%s\t",data_to_save->fecha);
-    //free(data_to_save->fecha);
     fprintf(output, "%s\t",data_to_save->metodo);
-    //free(data_to_save->metodo);
     fprintf(output, "%s\n",data_to_save->url);
-    //free(data_to_save->url);
     free(data_to_save);
+    free(to_save);
     if(!load_heap(out_heap,files,to_save->file_num)) return false;
   }
   return true;
