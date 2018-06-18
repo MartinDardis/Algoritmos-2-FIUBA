@@ -87,9 +87,10 @@ log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
   size_t cant = 0;
   size_t i;
   for(i = 0; i < max_lines && !feof(input);i++){
-    if(getline(&buffer,&cant,input)>0){
+    logs[i] = malloc(sizeof(log_t));
+    //fscanf(input,"%s\t%s\t%s\t%s",logs[i]->ip,logs[i]->fecha,logs[i]->metodo,logs[i]->url);
+    if (getline(&buffer,&cant,input) > 0){
       char** line = split(buffer,'\t');
-      logs[i] = malloc(sizeof(log_t));
       strcpy(logs[i]->ip,line[0]);
       strcpy(logs[i]->fecha,line[1]);
       strcpy(logs[i]->metodo,line[2]);
@@ -99,7 +100,8 @@ log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
       buffer = NULL;
       cant = 0;
     }
-    else i--;
+    else
+      i--;
   }
   (*read_lines) = i;
   return logs;
@@ -108,7 +110,7 @@ bool save_lines(log_t** lines,size_t part_file_num,size_t top){
   FILE* part_file = create_part_file(part_file_num);
   if(!part_file) return false;
   for(size_t i=0;i<top;i++){
-    fwrite(&lines[i],sizeof(log_t),1,part_file);
+    fwrite(lines[i],sizeof(log_t),1,part_file);
   }
   fclose(part_file);
   return true;
