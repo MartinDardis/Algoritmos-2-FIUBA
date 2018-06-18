@@ -18,6 +18,6 @@ bool ordenar_archivo(const char input_file[],const char out_file[],const size_t 
 
 bool agregar_archivo(const char* file);
 
-bool ver_visitantes(const char* file);
+bool ver_visitantes(const char* desde, const char* hasta);
 
 #endif
