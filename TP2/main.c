@@ -35,19 +35,19 @@ int main (int argc,char* argv[]){
     char** command = split(buffer,' ');
     switch (analizar_comando(command[0])){
       case 1:
-        error_command = ordenar_archivo(command[1],command[2],max_memory);
         if(last_file)
           free(last_file);
-        last_file = strdup(command[2]);
+        last_file = strndup(command[2],strlen(command[2])-1);
+        error_command = ordenar_archivo(command[1],last_file,max_memory);
         break;
       case 2:
         if(last_file)
           free(last_file);
         last_file = strdup(command[1]);
-        error_command = agregar_archivo(command[1]);
+        //error_command = agregar_archivo(command[1]);
         break;
       case 3:
-        error_command = ver_visitantes(last_file);
+        //error_command = ver_visitantes(last_file);
         break;
       default:
         error_command = true;
