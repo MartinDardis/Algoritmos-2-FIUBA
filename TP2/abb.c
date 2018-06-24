@@ -337,7 +337,7 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
     abb_in_order_recursivo(arbol->raiz, visitar, extra, &iterar);
 }
 
-void abb_in_order_desde_hasta_recursivo(nodo_abb_t* nodo, bool visitar(const char *, void *, void *), void *extra, bool* iterar){
+void abb_in_order_desde_hasta_recursivo(nodo_abb_t* nodo, bool visitar(const char *, void *, void *), void *extra, bool* iterar,const char* desde,const char* hasta){
     if(!nodo){
         return;
     }

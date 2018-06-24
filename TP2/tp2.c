@@ -100,7 +100,7 @@ log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
     size_t i;
     for(i = 0; i < max_lines && !feof(input);i++){
         logs[i] = malloc(sizeof(log_t));
-        fscanf(input,"%s\t%s\t%s\t%s",logs[i]->ip,logs[i]->fecha,logs[i]->metodo,logs[i]->url);
+        fscanf(input,"%s\t%s\t%s\t%s\n",logs[i]->ip,logs[i]->fecha,logs[i]->metodo,logs[i]->url);
     }
     (*read_lines) = i;
     return logs;
@@ -110,7 +110,7 @@ bool save_lines(log_t** lines,size_t part_file_num,size_t top){
     FILE* part_file = create_part_file(part_file_num);
     if(!part_file) return false;
     for(size_t i=0;i<top;i++){
-        fprintf(part_file,"%s\t%s\t%s\t%s\n",lines[i]->ip,lines[i]->fecha,lines[i]->metodo,lines[i]->url);
+      fwrite(lines[i],sizeof(log_t),1,part_file);
     }
     fclose(part_file);
     return true;
@@ -119,7 +119,7 @@ bool save_lines(log_t** lines,size_t part_file_num,size_t top){
 FILE* create_part_file(size_t part){
     char file_name[30];
     sprintf(file_name,"%i.part",(int)part);
-    FILE* file = fopen(file_name,"wt");
+    FILE* file = fopen(file_name,"w");
     return file;
 }
 
@@ -139,6 +139,7 @@ bool merge_files(FILE* output,size_t num_parts){
     for(size_t i = 0; i<num_parts; i++){
         fclose(files[i]);
     }
+    free(files);
     return estate;
 }
 
@@ -147,9 +148,7 @@ heap_t* heapifile(FILE* files[],size_t num_parts){
   for(size_t i = 0; i < num_parts ;i++){
     to_heap[i] = malloc(sizeof(adhoc_t));
     to_heap[i]->file_num = i;
-    fscanf(files[i],"%s\t%s\t%s\t%s",(to_heap[i]->data).ip,(to_heap[i]->data).fecha,(to_heap[i]->data).metodo,(to_heap[i]->data).url);
-    while(strcmp((to_heap[i]->data).ip,"\0") == 0)
-      fscanf(files[i],"%s\t%s\t%s\t%s",(to_heap[i]->data).ip,(to_heap[i]->data).fecha,(to_heap[i]->data).metodo,(to_heap[i]->data).url);
+    fread(&(to_heap[i]->data),sizeof(log_t),1,files[i]);
   }
   heap_t* heap = heap_crear_arr((void*)to_heap,num_parts,heap_cmp);
   free(to_heap);
@@ -160,7 +159,7 @@ bool open_part_files(FILE* files [],size_t num_parts){
     for(size_t i=0 ; i<num_parts;i++){
         char file_name[30];
         sprintf(file_name,"%i.part",(int)i);
-        files[i] = fopen(file_name,"rt");
+        files[i] = fopen(file_name,"r");
         if (!files[i]) return false;
     }
     return true;
@@ -170,9 +169,12 @@ bool load_heap(heap_t* out_heap,FILE* files[],size_t file_to_read){
     if(feof(files[file_to_read])) return true;
     adhoc_t* queue = malloc(sizeof(adhoc_t));
     if(!queue) return false;
-    fscanf(files[file_to_read],"%s\t%s\t%s\t%s",queue->data.ip,queue->data.fecha,queue->data.metodo,queue->data.url);
+    fread(&(queue->data),sizeof(log_t),1,files[file_to_read]);
     queue->file_num = file_to_read;
-    heap_encolar(out_heap,queue);
+    if(!feof(files[file_to_read]))
+      heap_encolar(out_heap,queue);
+    else
+      free(queue);
     return true;
 }
 
@@ -180,8 +182,9 @@ bool write_out(heap_t* out_heap,FILE* output,FILE* files[],size_t num_parts){
     while (! heap_esta_vacio(out_heap)) {
         adhoc_t* to_save = heap_desencolar(out_heap);
         fprintf(output,"%s\t%s\t%s\t%s\n",(to_save->data).ip,(to_save->data).fecha,(to_save->data).metodo,(to_save->data).url);
+        int to_load = to_save->file_num;
         free(to_save);
-        if(!load_heap(out_heap,files,to_save->file_num)) return false;
+        if(!load_heap(out_heap,files,to_load)) return false;
     }
     return true;
 }
