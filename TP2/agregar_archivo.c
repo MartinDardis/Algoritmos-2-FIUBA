@@ -1,3 +1,5 @@
+#include "tp2.h"
+
 bool agregar_archivo(const char* file){
     if(!file) {
         return false;
