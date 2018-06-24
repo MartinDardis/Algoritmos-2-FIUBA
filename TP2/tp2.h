@@ -6,8 +6,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include "heap.h"
-//#include "abb.h"
-//#include "hash.h"
+#include "abb.h"
+#include "hash.h"
+#include "lista.h"
+#include "pila.h"
 #include "strutil.h"
 
 //La funcion ordena cronologicamente un archivo log.
@@ -18,6 +20,6 @@ bool ordenar_archivo(const char input_file[],const char out_file[],const size_t 
 
 bool agregar_archivo(const char* file);
 
-bool ver_visitantes(const char* desde, const char* hasta);
+bool ver_visitantes(const char* input, char* desde, const char* hasta);
 
 #endif
