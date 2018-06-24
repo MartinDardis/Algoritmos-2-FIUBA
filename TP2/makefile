@@ -9,10 +9,20 @@ VIEW_VISIT = ver_visitantes.c
 build_lib:
 	$(CC) $(FLAGS_COMPILE) $(LIBRARY)
 
-build_sort: $(SORT_FILE)
-	$(CC) heap.o strutil.o $(MAIN) $(SORT_FILE) -o sort
+build_sort: $(SORT_FILE) build_lib
+	$(CC) $(FLAGS_COMPILE) $(SORT_FILE)
+
+build_add: $(ADD_FILE) build_lib
+	$(CC) $(FLAGS_COMPILE) $(ADD_FILE)
+
+build_view: $(VIEW_VISIT) build_lib
+	$(CC) $(FLAGS_COMPILE) $(VIEW_VISIT)
+
+all: build_lib build_sort build_add build_view
+	$(CC) $(MAIN) -o programa
+
 
 clear:
-	rm sort
 	rm *.o
 	rm *.part
+	rm programa
