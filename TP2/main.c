@@ -43,11 +43,11 @@ int main (int argc,char* argv[]){
       case 2:
         if(last_file)
           free(last_file);
-        last_file = strdup(command[1]);
-        //error_command = agregar_archivo(command[1]);
+        last_file = strndup(command[1],strlen(command[1])-1);
+        error_command = agregar_archivo(command[1]);
         break;
       case 3:
-        //error_command = ver_visitantes(last_file);
+        error_command = ver_visitantes(last_file,command[1],command[2]);
         break;
       default:
         error_command = true;
