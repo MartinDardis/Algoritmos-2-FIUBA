@@ -1,13 +1,13 @@
 #include "tp2.h"
 
-bool agregar_archivo(const char* file){
+hash_t* generar_hash(const char* file){
     if(!file) {
-        return false;
+        return NULL;
     }
     FILE* input = fopen(file,"rt");
     hash_t* hash = hash_crear(lista_destruir);
     if(!hash){
-        return false;
+        return NULL;
     }
 
     char* buffer = NULL;
@@ -35,11 +35,20 @@ bool agregar_archivo(const char* file){
     }
     free(buffer);
     fclose(input);
+    return hash;
+}
 
+bool agregar_archivo(const char* file){
+    hash_t* hash = generar_hash(file);
+    if(!hash){
+        return false;
+    }
     hash_iter_t* hash_iter = hash_iter_crear(hash);
     if(!hash_iter){
         return false;
     }
+
+    char* ip;
     lista_iter_t* lista_iter_1;
     lista_iter_t* lista_iter_2;
     char* fecha_1;
@@ -66,6 +75,9 @@ bool agregar_archivo(const char* file){
             if(time_diference(fecha_1; fecha_2) >= DOS_MAXIMUM_TIME){
                 heap_encolar(heap, ip);
                 ip_actual_ataco = true;
+            } else {
+                lista_iter_avanzar(lista_iter_1);
+                lista_iter_avanzar(lista_iter_2);
             }
         }
 
