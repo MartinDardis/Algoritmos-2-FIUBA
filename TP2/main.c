@@ -32,6 +32,7 @@ int main (int argc,char* argv[]){
   size_t size = 0;
   printf("Ingrese comandos\n");
   while(!error_command && getline(&buffer,&size,stdin)>0 ){
+    printf("0\n");
     char** command = split(buffer,' ');
     switch (analizar_comando(command[0])){
       case 1:
@@ -47,6 +48,7 @@ int main (int argc,char* argv[]){
         error_command = agregar_archivo(command[1]);
         break;
       case 3:
+        printf("0.9");
         error_command = ver_visitantes(last_file,command[1],command[2]);
         break;
       default:
@@ -66,6 +68,7 @@ int main (int argc,char* argv[]){
 
 size_t analizar_comando(char* command){
   size_t selec = 0;
+  printf("0.8");
   if( strcmp(command,ORDENAR) == 0)
     selec = 1;
   else if (strcmp(command,AGREGAR)== 0)

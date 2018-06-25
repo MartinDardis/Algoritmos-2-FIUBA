@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #ifndef TP2_H
 #define TP2_H
 
@@ -5,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 #include "heap.h"
 #include "abb.h"
 #include "hash.h"

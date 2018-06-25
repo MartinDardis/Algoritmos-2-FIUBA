@@ -1,5 +1,5 @@
-#include "tp2.h"
 #define _XOPEN_SOURCE
+#include "tp2.h"
 #include <time.h>
 
 #define TIME_FORMAT "%FT%T%z"
@@ -45,10 +45,12 @@ bool agregar_archivo(const char* file){
         lista_t* lista = hash_obtener(hash, ip);
 
         lista_iter_1 = lista_iter_crear(lista);
-        lista_iter_2 = lista_iter_crear(lista);
         for (int i = 0; i < 5; i++){
             lista_iter_avanzar(lista_iter_1);
         }
+        fecha_1 = lista_iter_ver_actual(lista_iter_1);
+        lista_iter_2 = lista_iter_crear(lista);
+        fecha_2 = lista_iter_ver_actual(lista_iter_2);
 
         while(!lista_iter_al_final(lista_iter_1) && !ip_actual_ataco){
             if(diferencia_tiempo(fecha_1, fecha_2) >= DOS_MAXIMUM_TIME){// hay q hacer conversion de string a time para usar difftime
@@ -56,7 +58,9 @@ bool agregar_archivo(const char* file){
                 ip_actual_ataco = true;
             } else {
                 lista_iter_avanzar(lista_iter_1);
+                fecha_1 = lista_iter_ver_actual(lista_iter_1);
                 lista_iter_avanzar(lista_iter_2);
+                fecha_2 = lista_iter_ver_actual(lista_iter_2);
             }
         }
 
@@ -100,7 +104,7 @@ hash_t* generar_hash(const char* file){
     char* fecha;
     lista_t* lista;
 
-    while (getline(&buffer,&cant,input) > 0){
+    while (!feof(input) && getline(&buffer,&cant,input) > 0){
         line = split(buffer,'\t');
         ip = line[0];
         fecha = line[1];

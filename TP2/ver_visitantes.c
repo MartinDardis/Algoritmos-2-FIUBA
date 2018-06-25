@@ -6,21 +6,27 @@ bool print_ip(const char * clave, void * dato, void * extra){
 }
 
 bool ver_visitantes(const char* input_file,const char* desde, const char* hasta){
-    FILE* input = fopen(input_file,"r");
-    if(!desde || !hasta){
+    printf("1\n");
+    if(!input_file || !desde || !hasta){
         return false;
     }
+    FILE* input = fopen(input_file,"r");
+    if(!input){
+        return false;
+    }
+    printf("2\n");
     abb_t* abb = abb_crear(ipcmp, NULL);
     if(!abb){
         return false;
     }
+    printf("se creo\n");
     char* buffer = NULL;
     size_t cant = 0;
     char** line;
 
     char* ip;
 
-    while (getline(&buffer,&cant,input) > 0){
+    while (!feof(input) && getline(&buffer,&cant,input) > 0){
         line = split(buffer,'\t');
         ip = line[0];
         abb_guardar(abb, ip, NULL);
