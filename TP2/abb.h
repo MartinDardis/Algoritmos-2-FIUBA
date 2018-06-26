@@ -1,7 +1,15 @@
+#ifndef ABB_H
+#define ABB_H
+
+#define _POSIX_C_SOURCE 200809L //strdup
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
 #include "pila.h"
 
 typedef struct abb abb_t;
+typedef struct abb_iter abb_iter_t;
 
 typedef int (*abb_comparar_clave_t) (const char *, const char *);
 typedef void (*abb_destruir_dato_t) (void *);
@@ -66,8 +74,6 @@ void abb_in_order_desde_hasta(abb_t *arbol, bool visitar(const char *, void *, v
 //iterador externo
 
 
-typedef struct abb_iter abb_iter_t;
-
 /* Crea un iterador externo del arbol binario, que recorre de forma ordenada segun
  * la funcion de comparacion.
  * Pre: El arbol existe
@@ -93,3 +99,5 @@ bool abb_iter_in_al_final(const abb_iter_t *iter);
  * Pre: El iterador externo existe
  */
 void abb_iter_in_destruir(abb_iter_t* iter);
+
+#endif
