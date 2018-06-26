@@ -182,7 +182,7 @@ bool write_out(heap_t* out_heap,FILE* output,FILE* files[],size_t num_parts){
     while (! heap_esta_vacio(out_heap)) {
         adhoc_t* to_save = heap_desencolar(out_heap);
         fprintf(output,"%s\t%s\t%s\t%s\n",(to_save->data).ip,(to_save->data).fecha,(to_save->data).metodo,(to_save->data).url);
-        int to_load = to_save->file_num;
+        size_t to_load = to_save->file_num;
         free(to_save);
         if(!load_heap(out_heap,files,to_load)) return false;
     }
