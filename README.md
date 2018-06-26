@@ -18,8 +18,8 @@ Traer los posibles cambios en el repo remoto al local
 
 	git status  <--> git pull
 
-### Como Pullear?
-	git add *  ->  git commit -m "..."  ->  git pull
+### Como Pushear?
+	git add *  ->  git commit -m "..."  ->  git push
 
 
 **Nota: El * puede ser cambiado por el nombre de el/los archivos especificos**
