@@ -1,11 +1,12 @@
 #include "tp2.h"
 
 bool print_ip(const char * clave, void * dato, void * extra){
-    printf(clave);
+    printf("%s",clave);
     return true;
 }
 
-bool ver_visitantes(const char* input,const char* desde, const char* hasta){
+bool ver_visitantes(const char* input_file,const char* desde, const char* hasta){
+    FILE* input = fopen(input_file,"r");
     if(!desde || !hasta){
         return false;
     }
