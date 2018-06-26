@@ -20,6 +20,9 @@ bool ordenar_archivo(const char input_file[],const char out_file[],const size_t 
 
 bool agregar_archivo(const char* file);
 
-bool ver_visitantes(const char* input, char* desde, const char* hasta);
+bool ver_visitantes(const char* input_file,const char* desde,const char* hasta);
+
+//FUNCION DE COMPARACION DE IP, devuelve >0 si S1 > S2; 0 si S1==S2, <0 si S1<S2
+int ipcmp(const char* s1,const char* s2);
 
 #endif
