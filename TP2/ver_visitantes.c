@@ -1,18 +1,23 @@
 #include "tp2.h"
 
+
+
 bool print_ip(const char * clave, void * dato, void * extra){
-    printf("%s",clave);
+    printf("\t%s\n",clave);
     return true;
 }
 
 bool ver_visitantes(const char* input_file,const char* desde, const char* hasta){
-    FILE* input = fopen(input_file,"r");
+    FILE* input = fopen(input_file,"rt");
+    if(!input){
+      return RET_ERROR;
+    }
     if(!desde || !hasta){
-        return false;
+        return RET_ERROR;
     }
     abb_t* abb = abb_crear(ipcmp, NULL);
     if(!abb){
-        return false;
+        return RET_ERROR;
     }
     char* buffer = NULL;
     size_t cant = 0;
@@ -27,8 +32,8 @@ bool ver_visitantes(const char* input_file,const char* desde, const char* hasta)
     }
     free_strv(line);
     free(buffer);
-
+    printf("Visitantes:\n");
     abb_in_order_desde_hasta(abb, print_ip, NULL, desde, hasta);
     abb_destruir(abb);
-    return true;
+    return RET_OK;
 }

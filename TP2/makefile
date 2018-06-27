@@ -24,3 +24,4 @@ all: build_lib build_sort build_add build_view
 clear:
 	rm *.o
 	rm programa
+	rm *.part
