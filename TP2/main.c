@@ -30,7 +30,6 @@ int main (int argc,char* argv[]){
   bool error_command = false;
   char* buffer = NULL;
   size_t size = 0;
-  printf("Ingrese comandos\n");
   while(!error_command && getline(&buffer,&size,stdin)>0 ){
     char** command = split(buffer,' ');
     switch (analizar_comando(command[0])){

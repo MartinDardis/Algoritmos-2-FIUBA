@@ -16,6 +16,9 @@ all: $(OBJ)
 %.o: %.c
 	$(CC) $(FLAGS_COMPILE) -c  $< >$@
 
+zip:
+	zip "entrega.zip" *.c *.h deps.mk
+
 .PHONY: clean
 clean:
 	rm *.o

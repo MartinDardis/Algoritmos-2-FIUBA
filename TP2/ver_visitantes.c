@@ -15,12 +15,10 @@ bool ver_visitantes(const char* input_file,const char* desde, const char* hasta)
     if(!desde || !hasta){
         return RET_ERROR;
     }
-    printf("2\n");
     abb_t* abb = abb_crear(ipcmp,free);
     if(!abb){
         return RET_ERROR;
     }
-    printf("se creo\n");
     char* buffer = NULL;
     size_t cant = 0;
     char** line;
