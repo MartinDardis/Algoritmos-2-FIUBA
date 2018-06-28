@@ -5,21 +5,17 @@ MAIN = main.c
 SORT_FILE = tp2.c
 ADD_FILE = agregar_archivo.c
 VIEW_VISIT = ver_visitantes.c
+OBJ =  hash.o heap.o abb.o strutil.o pila.o lista.o main.o tp2.o agregar_archivo.o ver_visitantes.o
 
 build_lib:
 	$(CC) -c $(FLAGS_COMPILE) $(LIBRARY)
 
-build_sort: $(SORT_FILE) build_lib
-	$(CC) -c $(FLAGS_COMPILE) $(SORT_FILE)
+all: $(OBJ)
+	$(CC) $(FLAGS_COMPILE) *.o -o programa
 
-build_add: $(ADD_FILE) build_lib
-	$(CC) -c $(FLAGS_COMPILE) $(ADD_FILE)
+%.o: %.c
+	$(CC) $(FLAGS_COMPILE) -c  $< >$@
 
-build_view: $(VIEW_VISIT) build_lib
-	$(CC) -c $(FLAGS_COMPILE) $(VIEW_VISIT)
-
-all: build_lib build_sort build_add build_view
-	$(CC) $(FLAGS_COMPILE) $(MAIN) *.o -o programa
 
 clear:
 	rm *.o

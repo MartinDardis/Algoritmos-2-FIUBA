@@ -1,8 +1,9 @@
 #include "tp2.h"
+
 #define _XOPEN_SOURCE
 #include <time.h>
-
 #define TIME_FORMAT "%FT%T%z"
+
 #define DOS_MAXIMUM_TIME 5
 
 time_t iso8601_to_time(const char* iso8601){
