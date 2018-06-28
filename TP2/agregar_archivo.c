@@ -3,7 +3,8 @@
 #include <time.h>
 #define TIME_FORMAT "%FT%T%z"
 
-#define DOS_MAXIMUM_TIME 5
+#define DOS_MAXIMUM_ACCESS 5
+#define DOS_MAXIMUM_TIME 2
 
 time_t iso8601_to_time(const char* iso8601){
     struct tm bktime = { 0 };
@@ -37,33 +38,32 @@ bool agregar_archivo(const char* file){
         ip_actual_ataco = false;
         lista_t* lista = hash_obtener(hash, ip);
 
-        lista_iter_1 = lista_iter_crear(lista);
-        for (int i = 0; i < 5; i++){
+        lista_iter_t* lista_iter_1 = lista_iter_crear(lista);
+        for (int i = 0; (i < DOS_MAXIMUM_ACCESS) && !lista_iter_al_final(lista_iter_1); i++){
             lista_iter_avanzar(lista_iter_1);
         }
-        fecha_1 = lista_iter_ver_actual(lista_iter_1);
-        lista_iter_2 = lista_iter_crear(lista);
-        fecha_2 = lista_iter_ver_actual(lista_iter_2);
-
+        lista_iter_t* lista_iter_2 = lista_iter_crear(lista);
         while(!lista_iter_al_final(lista_iter_1) && !ip_actual_ataco){
-            char* fecha_1 = strdup((char*)lista_iter_ver_actual(lista_iter_1));
-            char* fecha_2 = strdup((char*)lista_iter_ver_actual(lista_iter_2));
+
+            char* fecha_1 = (char*)lista_iter_ver_actual(lista_iter_1); //REVISAR strdup
+            char* fecha_2 = (char*)lista_iter_ver_actual(lista_iter_2);
             if(diferencia_tiempo(fecha_1, fecha_2) >= DOS_MAXIMUM_TIME){// hay q hacer conversion de string a time para usar difftime
                 heap_encolar(heap, ip);
                 ip_actual_ataco = true;
             } else {
+
                 lista_iter_avanzar(lista_iter_1);
-                fecha_1 = lista_iter_ver_actual(lista_iter_1);
+                fecha_1 =(char*)lista_iter_ver_actual(lista_iter_1);
                 lista_iter_avanzar(lista_iter_2);
-                fecha_2 = lista_iter_ver_actual(lista_iter_2);
+                fecha_2 = (char*)lista_iter_ver_actual(lista_iter_2);
             }
-            free(fecha_1);
-            free(fecha_2);
         }
         lista_iter_destruir(lista_iter_1);
         lista_iter_destruir(lista_iter_2);
         if(!ip_actual_ataco) free(ip);
+        hash_iter_avanzar(hash_iter);
     }
+
     heap_destruir(heap,imprimir_dos);
     hash_iter_destruir(hash_iter);
     hash_destruir(hash);
@@ -71,7 +71,8 @@ bool agregar_archivo(const char* file){
 }
 
 void destruir(void* dato){
-  lista_destruir(dato,NULL);
+    if(dato)
+        lista_destruir((lista_t*)dato,NULL);
 }
 int ipcmp_inv(const void* a,const void* b){
   return (0 - ipcmp((char*)a,(char*)b));
@@ -80,6 +81,7 @@ hash_t* generar_hash(const char* file){
     FILE* input = fopen(file,"rt");
     if(!input)
       return NULL;
+
     hash_t* hash = hash_crear(destruir);
     if(!hash){
         return NULL;
