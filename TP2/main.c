@@ -45,7 +45,7 @@ int main (int argc,char* argv[]){
         if(last_file)
           free(last_file);
         last_file = strndup(command[1],strlen(command[1])-1);
-        error_command = agregar_archivo(command[1]);
+        error_command = agregar_archivo(last_file);
         break;
       case 3:
         printf("0.9");
@@ -71,7 +71,7 @@ size_t analizar_comando(char* command){
   printf("0.8");
   if( strcmp(command,ORDENAR) == 0)
     selec = 1;
-  else if (strcmp(command,AGREGAR)== 0)
+  else if (strcmp(command,AGREGAR) == 0)
     selec = 2;
   else if (strcmp(command,VER) == 0)
     selec = 3;
@@ -81,5 +81,5 @@ void print_result(bool state,char* command){
   if (state)
     fprintf(stderr, "Error en comando %s\n",command);
   else
-    fprintf(stdout,"OK");
+    fprintf(stdout,"OK\n");
 }

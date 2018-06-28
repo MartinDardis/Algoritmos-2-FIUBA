@@ -14,6 +14,10 @@
 #include "pila.h"
 #include "strutil.h"
 
+// booleano para Devolucion
+#define RET_ERROR true
+#define RET_OK false
+
 //La funcion ordena cronologicamente un archivo log.
 //recibe por parametro el nombre de un archivo de log, el nombre del archivo de salida y la cantidad
 //de memoria que podra utilizar. Devuelve TRUE si pudo ordenar y False si hubo un error.
