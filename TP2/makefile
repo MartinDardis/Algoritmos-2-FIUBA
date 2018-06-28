@@ -16,8 +16,8 @@ all: $(OBJ)
 %.o: %.c
 	$(CC) $(FLAGS_COMPILE) -c  $< >$@
 
-
-clear:
+.PHONY: clean
+clean:
 	rm *.o
 	rm programa
 	rm *.part
