@@ -1,0 +1,4 @@
+start
+set argc = 2
+set argv[1]= "200"
+b 40

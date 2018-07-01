@@ -334,25 +334,25 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
     abb_in_order_recursivo(arbol->raiz, visitar, extra, &iterar);
 }
 
-void abb_in_order_desde_hasta_recursivo(nodo_abb_t* nodo, bool visitar(const char *, void *, void *), void *extra, bool* iterar,const char* desde,const char* hasta){
+void abb_in_order_desde_hasta_recursivo(abb_t *arbol, nodo_abb_t* nodo, bool visitar(const char *, void *, void *), void *extra, bool* iterar,const char* desde,const char* hasta){
     if(!nodo){
         return;
     }
-    if(*iterar && (strcmp(desde, nodo->clave) < 0)){
-        abb_in_order_recursivo(nodo->hijo_izq, visitar, extra, iterar);
+    if(*iterar && (arbol->cmp(desde, nodo->clave) < 0)){
+        abb_in_order_desde_hasta_recursivo(arbol, nodo->hijo_izq, visitar, extra, iterar, desde, hasta);
     }
-    if(*iterar && (strcmp(desde, nodo->clave) > 0) && (strcmp(hasta, nodo->clave) < 0)){
+    if(*iterar && (arbol->cmp(desde, nodo->clave) <= 0) && (arbol->cmp(hasta, nodo->clave) >= 0)){
         *iterar = visitar(nodo->clave, nodo->dato, extra);
     }
-    if(*iterar && (strcmp(hasta, nodo->clave) > 0)){
-        abb_in_order_recursivo(nodo->hijo_der, visitar, extra, iterar);
+    if(*iterar && (arbol->cmp(hasta, nodo->clave) > 0)){
+        abb_in_order_desde_hasta_recursivo(arbol, nodo->hijo_der, visitar, extra, iterar, desde, hasta);
     }
     return;
 }
 
 void abb_in_order_desde_hasta(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra, const char* desde, const char* hasta){
     bool iterar = true;
-    abb_in_order_desde_hasta_recursivo(arbol->raiz, visitar, extra, &iterar, desde, hasta);
+    abb_in_order_desde_hasta_recursivo(arbol, arbol->raiz, visitar, extra, &iterar, desde, hasta);
 }
 
 

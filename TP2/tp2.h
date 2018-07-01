@@ -25,9 +25,9 @@
 //LA CANTIDAD DE MEMORIA DEBE SER EN KBYTES
 bool ordenar_archivo(const char input_file[],const char out_file[],const size_t max_memory);
 
-bool agregar_archivo(const char* file);
+bool agregar_archivo(const char* file, abb_t** puntero_abb);
 
-bool ver_visitantes(const char* input_file,const char* desde,const char* hasta);
+bool ver_visitantes(abb_t* abb, const char* desde, const char* hasta);
 
 //FUNCION DE COMPARACION DE IP, devuelve >0 si S1 > S2; 0 si S1==S2, <0 si S1<S2
 int ipcmp(const char* s1,const char* s2);

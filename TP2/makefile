@@ -16,6 +16,13 @@ all: $(OBJ)
 %.o: %.c
 	$(CC) $(FLAGS_COMPILE) -c  $< >$@
 
+pruebas: programa
+	valgrind --leak-check=full --track-origins=yes --show-reachable=yes cat pruebas.txt | ./programa 200
+
+gdb: programa
+	gdb -tui ./programa
+	cat gdb.txt
+
 zip:
 	zip "entrega.zip" *.c *.h deps.mk
 

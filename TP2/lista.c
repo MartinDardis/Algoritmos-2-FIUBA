@@ -1,236 +1,306 @@
 #include "lista.h"
 #include <stdlib.h>
-#include <stdbool.h>
 
-typedef struct nodo nodo_t;
-struct nodo{
-  void* dato;
-  nodo_t* siguiente;
-};
+/* ******************************************************************
+ *                DEFINICION DE LOS TIPOS DE DATOS
+ * *****************************************************************/
+typedef struct nodo{
+    void* dato;
+    struct nodo* proximo;
+} nodo_t;
 
+/* La lista está planteada como una lista de punteros genéricos. */
 struct lista{
-  nodo_t *primero;
-  nodo_t *ultimo;
-  size_t elementos;
+    nodo_t* primero;
+    nodo_t* ultimo;
+    size_t largo;
 };
 
-struct lista_iter {
-  lista_t *lista;
-  nodo_t *anterior;
-  nodo_t *actual;
-};
+/* ******************************************************************
+ *                    PRIMITIVAS DEL NODO
+ * *****************************************************************/
+// Crea un nodo
+// Post: Devuelve un nuevo nodo vacio, o NULL en caso de error
+nodo_t* nodo_crear(void* valor){
+    nodo_t* nodo = malloc(sizeof(nodo_t));
+    if(nodo == NULL){
+        return NULL;
+    }
 
-//Implementaciones de uso interno del tda
-nodo_t* nodo_crear(void*dato){
-  nodo_t* nuevo = malloc(sizeof(nodo_t));
-  if( nuevo == NULL )
-    return NULL;
-  (nuevo->dato) = dato;
-  return nuevo;
-}
-void* ver_nodo(nodo_t *actual){ //Uso Interno del tda
-  return (actual->dato);
-}
-void* nodo_destruir(nodo_t* nodo){
-  void* dato = (nodo->dato);
-  free(nodo);
-  return dato;
-}
-//Implementaciones de las firmas publicas
-lista_t *lista_crear(void){
-  lista_t *nueva = malloc(sizeof(lista_t));
-  if(nueva  ==  NULL)
-    return NULL;
-  (nueva->primero) = NULL;
-  (nueva->ultimo) = NULL;
-  (nueva->elementos) = 0;
-  return nueva;
+    nodo->dato = valor;
+    nodo->proximo = NULL;
+    return nodo;
 }
 
+// Destruye el nodo, y hace llamado a una funcion pasada por parametro
+// si se pasa alguna, usando el dato del nodo como parametro
+void nodo_destruir(nodo_t* nodo, void destruir_dato(void*)){
+    if(destruir_dato != NULL){
+        destruir_dato(nodo->dato);
+    }
+    free(nodo);
+}
+
+/* ******************************************************************
+ *                    PRIMITIVAS DE LA LISTA
+ * *****************************************************************/
+
+// Crea una lista.
+// Post: devuelve una nueva lista vacía.
+lista_t* lista_crear(void){
+    lista_t* lista = malloc(sizeof(lista_t));
+    if(lista == NULL){
+        return NULL;
+    }
+
+    lista->primero = NULL;
+    lista->ultimo = NULL;
+    lista->largo = 0;
+    return lista;
+}
+
+// Devuelve verdadero o falso, según si la lista tiene o no elementos enlistados.
+// Pre: la lista fue creada.
 bool lista_esta_vacia(const lista_t *lista){
-  if ( (lista->primero)  ==  NULL )
+    return (lista->primero == NULL); //REVISAR puede ser !lista->largo
+}
+
+// Agrega un nuevo elemento a la lista. Devuelve falso en caso de error.
+// Pre: la lista fue creada.
+// Post: se agregó un nuevo elemento a la lista, valor se encuentra al inicio
+// de la lista.
+bool lista_insertar_primero(lista_t *lista, void* valor){
+    nodo_t* nodo_nuevo = nodo_crear(valor);
+    if(nodo_nuevo == NULL){
+        return false;
+    }
+
+    if(lista_esta_vacia(lista)){
+        lista->ultimo = nodo_nuevo;
+    }
+    nodo_t* nodo_auxiliar = lista->primero;
+    lista->primero = nodo_nuevo;
+    lista->primero->dato = valor;
+    lista->primero->proximo = nodo_auxiliar;
+    lista->largo++;
     return true;
-  return false;
 }
 
-bool lista_insertar_primero(lista_t *lista, void *dato){
-  nodo_t *nuevo = nodo_crear(dato);
-  if (nuevo  ==  NULL)
-    return false;
-  (nuevo->siguiente) = (lista->primero);
-  if (lista_esta_vacia(lista)){
-    (lista->primero) = nuevo;
-    (lista->ultimo) = nuevo;
-  }
-  else{
-    (lista->primero) = nuevo;
-  }
-  (lista->elementos)++;
-  return true;
+// Agrega un nuevo elemento a la lista. Devuelve falso en caso de error.
+// Pre: la lista fue creada.
+// Post: se agregó un nuevo elemento a la lista, valor se encuentra al final
+// de la lista.
+bool lista_insertar_ultimo(lista_t *lista, void* valor){
+    nodo_t* nodo_nuevo = nodo_crear(valor);
+    if(nodo_nuevo == NULL){
+        return false;
+    }
+
+    if(lista_esta_vacia(lista)){
+        lista->primero = nodo_nuevo;
+    } else {
+        lista->ultimo->proximo = nodo_nuevo;
+    }
+    lista->ultimo = nodo_nuevo;
+    lista->largo++;
+    return true;
 }
 
-bool lista_insertar_ultimo(lista_t *lista, void *dato){
-  nodo_t *nuevo = nodo_crear(dato);
-  if (nuevo  ==  NULL)
-    return false;
-  (nuevo->siguiente) = NULL;//EL siguiente es NULL por ser el ultimo
-  if (lista_esta_vacia(lista)){//Si no hay elementos
-    (lista->primero) = nuevo;
-    (lista->ultimo) = nuevo;
-  }
-  else{
-    ((lista->ultimo)->siguiente) = nuevo;
-    (lista->ultimo) = nuevo;
-  }
-      (lista->elementos)++;
-  return true;
+// Pre: lista esta creada y no esta vacia
+// Destruye el primer nodo y actualiza la posicion inicial de la lista
+void lista_destruir_primero(lista_t* lista, void destruir_dato(void*)){
+    nodo_t* segundo = lista->primero->proximo;
+    nodo_destruir(lista->primero, destruir_dato);
+
+    lista->primero = segundo;
+    lista->largo--; //REVISAR, no se si va aca o en lista_borrar_primero
 }
 
-void *lista_borrar_primero(lista_t *lista){
-  if(lista_esta_vacia(lista))
-    return NULL;
-  nodo_t *actual = (lista->primero);
-  (lista->primero) = (actual->siguiente);
-  (lista->elementos)--;
-  if ((lista->primero) == NULL)
-    (lista->ultimo) = NULL;
-  return nodo_destruir(actual);
+// Obtiene el valor del primer elemento de la lista. Si la lista tiene
+// elementos, se devuelve el valor del primero, si está vacía devuelve NULL.
+// Pre: la lista fue creada.
+// Post: se devolvió el primer elemento de la lista, cuando no está vacía.
+void* lista_ver_primero(const lista_t *lista){
+    if (lista_esta_vacia(lista)){
+        return NULL;
+    }
+    return (lista->primero->dato);
 }
 
-void *lista_ver_primero(const lista_t *lista){
-  if(lista_esta_vacia(lista))
-    return NULL;
-  return ver_nodo(lista->primero);
+// Pre: lista esta creada y no esta vacia
+// Destruye el primer nodo y actualiza la posicion inicial de la lista
+void* lista_borrar_primero(lista_t* lista){
+    void* valor = lista_ver_primero(lista);
+    if(!lista_esta_vacia(lista)){
+        lista_destruir_primero(lista, NULL);
+    }
+    return valor;
 }
 
-void *lista_ver_ultimo(const lista_t* lista){
-  if(lista_esta_vacia(lista))
-    return NULL;
-  return ver_nodo(lista->ultimo);
+// Obtiene el valor del ultimo elemento de la lista. Si la lista tiene
+// elementos, se devuelve el valor del ultimo, si está vacía devuelve NULL.
+// Pre: la lista fue creada.
+// Post: se devolvió el ultimo elemento de la lista, cuando no está vacía.
+void* lista_ver_ultimo(const lista_t *lista){
+    if (lista_esta_vacia(lista)){
+        return NULL;
+    }
+    return (lista->ultimo->dato);
 }
 
-size_t lista_largo(const lista_t *lista){
-  return (lista->elementos);
+//
+size_t lista_largo(const lista_t* lista){
+    return lista->largo;
 }
 
-void lista_destruir(lista_t *lista, void destruir_dato(void *)){
-    while (!lista_esta_vacia(lista)) {
-      if (destruir_dato  ==  NULL)
-        lista_borrar_primero(lista);
-      else
-        destruir_dato(lista_borrar_primero(lista));
+// Destruye la lista. Si se recibe la función destruir_dato por parámetro,
+// para cada uno de los elementos de la lista llama a destruir_dato.
+// Pre: la lista fue creada. destruir_dato es una función capaz de destruir
+// los datos de la lista, o NULL en caso de que no se la utilice.
+// Post: se eliminaron todos los elementos de la lista.
+void lista_destruir(lista_t *lista, void destruir_dato(void*)){
+    while(!lista_esta_vacia(lista)){
+        lista_destruir_primero(lista, destruir_dato);
     }
     free(lista);
-    lista = NULL;
-    return;
 }
 
+/* ******************************************************************
+ *                          ITERADORES
+ * *****************************************************************/
 
-/* ITERADOR INTERNO */
+// aplica una funcion externa en cada elemento de la lista
+// pre: lista fue creada, la funcion pasada por parametro existe
 void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
-  if(lista_esta_vacia(lista))
-    return;
-  nodo_t *actual = (lista->primero);
-  while( (actual != NULL ) && visitar((actual->dato),extra) )
-    actual=(actual->siguiente);
-  return;
+    if(lista->primero == NULL){
+        return;
+    }
+
+    nodo_t* actual = lista->primero;
+    while(actual != NULL){
+        if (!visitar(actual->dato, extra)){
+            return;
+        }
+        actual = actual->proximo;
+    }
 }
-/* ITERADOR EXTERNO */
 
+struct lista_iter{
+    lista_t* lista;
+    nodo_t* actual;
+    nodo_t* anterior;
+};
 
+// Crea un iterador externo para una lista
+// pre: la lista fue creada
 lista_iter_t *lista_iter_crear(lista_t *lista){
-  lista_iter_t *nuevo = malloc(sizeof(lista_iter_t));
-  if (nuevo  ==  NULL)
-    return NULL;
-  (nuevo->lista) = lista;
-  (nuevo->anterior) = NULL;
-  (nuevo->actual) = (lista->primero);
-  return nuevo;
+    lista_iter_t* iter = malloc(sizeof(lista_iter_t));
+    if(iter == NULL){
+        return NULL;
+    }
+
+    iter->lista = lista;
+    iter->actual = lista->primero;
+    iter->anterior = NULL;
+    return iter;
 }
 
-bool lista_iter_avanzar(lista_iter_t *iter){
-  if (lista_iter_al_final(iter)){//Si no hay nodo siguiente al que estoy.
-    return false;
-  }
-  nodo_t* proximo = (iter->actual);
-  proximo = (proximo->siguiente);
-  (iter->anterior) = (iter->actual);//nodo anterior es el actual
-  (iter->actual) = proximo;//nodo actual es el siguiente
-  return true;
-}
-
-void *lista_iter_ver_actual(const lista_iter_t *iter){
-  nodo_t *actual = (iter->actual);
-  if(lista_iter_al_final(iter))
-    return NULL;
-  return (actual->dato);
-}
-
+// Devuelve true si el iterador se encuentra al final de la lista
+// y false en caso contrario
+// pre: el iterador fue creado
 bool lista_iter_al_final(const lista_iter_t *iter){
-  if( (iter->actual) == NULL)
+    return iter->actual == NULL;
+}
+
+// Devuelve true si el iterador se encuentra al inicio de la lista
+// y false en caso contrario
+// pre: el iterador fue creado
+bool lista_iter_al_principio(const lista_iter_t *iter){
+    return iter->anterior == NULL;
+}
+
+// posiciona al iterador en la siguiente ubicacion de la lista
+// pre: el iterador fue creado
+bool lista_iter_avanzar(lista_iter_t *iter){
+    if(lista_iter_al_final(iter)){
+        return false;
+    }
+
+    iter->anterior = iter->actual;
+    iter->actual = iter->actual->proximo;
     return true;
-  return false;
 }
 
-void lista_iter_destruir(lista_iter_t *iter){
-  free(iter);
-  iter = NULL;
-  return;
+// Devuelve la direccion del dato del elemento apuntado por el iterador
+// o devuelve NULL si no puede
+// pre: el iterador fue creado
+void *lista_iter_ver_actual(const lista_iter_t *iter){
+    if(lista_iter_al_final(iter)){
+        return NULL;
+    }
+    return iter->actual->dato;
 }
 
-bool iter_insertar_primero (lista_iter_t *iter,void* dato){
-  if ( lista_insertar_primero(iter->lista,dato) ){
-    (iter->actual) = ((iter->lista)->primero);
-    (iter->anterior) = NULL;// Redundate?
-    return true;
-  }
-  return false;
-}
-bool iter_insertar_ultimo (lista_iter_t *iter,void* dato){
-  if(lista_insertar_ultimo(iter->lista,dato))
-    (iter->actual) = ((iter->lista)->ultimo);
-  return true;
-}
-bool iter_insertar_medio(lista_iter_t *iter,void* dato){
-  lista_t *lista = (iter->lista);
-  nodo_t *nuevo = nodo_crear(dato);
-  if (nuevo   ==   NULL)
-    return false;
-  nodo_t *nodo_anterior = (iter->anterior);//cargo nodo anterior
-  (nodo_anterior->siguiente) = nuevo;//el siguiente al anterior es el nuevo
-  (nuevo->siguiente) = (iter->actual);//Nodo siguiente es donde estoy
-  (iter->actual) = nuevo;//Pongo el iter sobre el nuevo
-  (lista->elementos)++;//agrego un elemento a la lista
-  return true;
-}
-
+// inserta un elemento en la direccion de la lista a la cual apunta
+// el iterador, devuelve true si puede hacerlo, y false si no puede
+// pre: el iterador fue creado
 bool lista_iter_insertar(lista_iter_t *iter, void *dato){
-  if (lista_esta_vacia((iter)->lista) || (iter->anterior)  ==  NULL)//Insertar en una lista vacia o iter en primer elemento
-    return iter_insertar_primero(iter,dato);
-  else if(lista_iter_al_final(iter))//Insertar sobre el ultimo elemento
-    return iter_insertar_ultimo(iter,dato);
-  return iter_insertar_medio(iter,dato);//insertar en el medio
+    nodo_t* nodo_nuevo = nodo_crear(dato);
+    if(nodo_nuevo == NULL){
+        return false;
+    }
+
+    if(lista_iter_al_principio(iter)){
+        nodo_t* nodo_auxiliar = iter->lista->primero;
+        iter->lista->primero = nodo_nuevo;
+        iter->lista->primero->proximo = nodo_auxiliar;
+    } else {
+        iter->anterior->proximo = nodo_nuevo;
+        nodo_nuevo->proximo = iter->actual;
+
+        if(lista_iter_al_final(iter)){
+            iter->lista->ultimo->proximo = nodo_nuevo;
+        }
+    }
+
+    if(lista_iter_al_final(iter)){
+        iter->lista->ultimo = nodo_nuevo;
+    }
+
+    iter->actual = nodo_nuevo;
+    iter->lista->largo++;
+    return true;
+
 }
 
+// Elimina el elemento de la lista apuntado por el iterador
+// y devuelve la direccion del dato al que apunta. Si no puede devuelve NULL
+// pre: el iterador fue creado
 void *lista_iter_borrar(lista_iter_t *iter){
-  if(lista_esta_vacia(iter->lista) || lista_iter_al_final(iter)) // Casos en los que no hay nada que borrar
-    return NULL;
-  if((iter->anterior) == NULL || lista_largo(iter->lista) == 1){// Cuando el elemento es el primero o es unico
-    void* dato = lista_borrar_primero(iter->lista);//borro el primer elemento
-    (iter->actual) = ((iter->lista)->primero);//el nuevo actual es el NUEVO primero de la lista
-    return dato;//devuelvo el dato
-  }
+    if(lista_iter_al_final(iter)){
+        return NULL;
+    }
 
-  nodo_t* aux = (iter->actual);//Cargo nodo a borrar
-  if( (aux->siguiente) == NULL){// Si es el ultimo elemento
-    ((iter->anterior)->siguiente) = NULL;
-    ((iter->lista)->ultimo) = (iter->anterior);
-    (iter->actual) = NULL;
-    ((iter->lista)->elementos)--;
-    return nodo_destruir(aux);
-  }
-  ((iter->anterior)->siguiente) = (aux->siguiente);//El siguiente de anterior es el siguiente del que voy a borrar
-  (iter->actual) = (aux->siguiente);//Paro el iterador sobre el siguiente
-  ((iter->lista)->elementos)--;//Resto un elemento a la lista
-  return nodo_destruir(aux);//Devuelvo el dato
+    nodo_t* nodo_a_borrar = iter->actual;
+    void* valor = nodo_a_borrar->dato;
+
+    if(iter->actual->proximo == NULL){
+        iter->lista->ultimo = iter->anterior;
+    }
+    if(lista_iter_al_principio(iter)){
+        iter->lista->primero = iter->actual->proximo;
+    } else {
+        iter->anterior->proximo = iter->actual->proximo;
+    }
+
+    iter->actual = iter->actual->proximo;
+    iter->lista->largo--;
+    free(nodo_a_borrar);
+    return valor;
+}
+
+// destruye el iterador
+// pre: el iterador fue creado
+void lista_iter_destruir(lista_iter_t *iter){
+    free(iter);
 }
