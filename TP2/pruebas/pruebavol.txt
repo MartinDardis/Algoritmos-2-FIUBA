@@ -4,8 +4,7 @@ ordenar_archivo logs/access002.log logs/access002-ordenado.log
 agregar_archivo logs/access002-ordenado.log
 ordenar_archivo logs/access003.log logs/access003-ordenado.log
 agregar_archivo logs/access003-ordenado.log
-ordenar_archivo logs/access004.log logs/access004-ordenado.log
-agregar_archivo logs/access004-ordenado.log
+agregar_archivo logs/access004.log
 ordenar_archivo logs/access005.log logs/access005-ordenado.log
 agregar_archivo logs/access005-ordenado.log
 ordenar_archivo logs/access006.log logs/access006-ordenado.log

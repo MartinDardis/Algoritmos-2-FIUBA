@@ -77,7 +77,7 @@ bool agregar_archivo(const char* file, abb_t** puntero_abb){
 
 void destruir(void* dato){
     if(dato){
-        lista_destruir((lista_t*)dato,NULL);
+        lista_destruir((lista_t*)dato,free);
     }
 }
 
@@ -99,7 +99,7 @@ hash_t* generar_hash(const char* file, abb_t** puntero_abb){ //REVISAR nombre
     size_t cant = 0;
     while (!feof(input) && getline(&buffer,&cant,input) > 0){
         char ip[30];
-        char* fecha = malloc(sizeof(char)*25);
+        char* fecha = malloc(sizeof(char)*26);
         char** line = split(buffer,'\t');
         strcpy(ip,line[0]);
         strcpy(fecha,line[1]);

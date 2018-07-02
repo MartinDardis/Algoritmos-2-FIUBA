@@ -1,17 +1,13 @@
 #define _POSIX_C_SOURCE 200809L
-#define LINE_SIZE 300
+#define LINE_SIZE 200
 #include "tp2.h"
-#include "heap.h"
-#include "lista.h"
-#include "abb.h"
-#include "hash.h"
 
 
 typedef struct log{
     char ip[20];
     char fecha[30];
     char metodo[5];
-    char url[245];
+    char url[145];
 }log_t;
 
 typedef struct adhoc{
@@ -76,7 +72,7 @@ bool ordenar_archivo(const char* input_file,const char* output_file,const size_t
     bool error = false;
     size_t num_parts = 0;
     error = divide_and_sort(input,lines_in_parts,&num_parts);
-    if(!error) 
+    if(!error)
     	error = merge_files(output,num_parts);//tendrias que revisar si error es true antes de llamar esto y pisar el valor
     system("rm *.part");
     fclose(input);
@@ -100,12 +96,25 @@ bool divide_and_sort(FILE* input,size_t max_lines,size_t* parts){
 
 log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
     log_t** logs = malloc(sizeof(log_t*) * max_lines);
-    size_t i;
-    for(i = 0; i < max_lines && !feof(input);i++){
-        logs[i] = malloc(sizeof(log_t));
-        fscanf(input,"%s\t%s\t%s\t%s\n",logs[i]->ip,logs[i]->fecha,logs[i]->metodo,logs[i]->url);
+    size_t counter = 0;
+    char* buffer = NULL;
+    size_t cant = 0;
+    while((counter < max_lines) && getline(&buffer,&cant,input) > 0){
+        logs[counter] = malloc(sizeof(log_t));
+        char** split_l = split(buffer,'\t');// divido la linea
+        strcpy(logs[counter]->ip,split_l[0]);
+        strcpy(logs[counter]->fecha,split_l[1]);
+        strcpy(logs[counter]->metodo,split_l[2]);
+        if(split_l[3] == NULL)
+            strcpy(logs[counter]->url,"\0");
+        else
+            strcpy(logs[counter]->url,split_l[3]);
+        free_strv(split_l);
+        cant = 0;
+        free(buffer);
+        counter++;
     }
-    (*read_lines) = i;
+    (*read_lines) = counter;
     return logs;
 }
 
@@ -113,7 +122,8 @@ bool save_lines(log_t** lines,size_t part_file_num,size_t top){
     FILE* part_file = create_part_file(part_file_num);
     if(!part_file) return false;
     for(size_t i=0;i<top;i++){
-      fwrite(lines[i],sizeof(log_t),1,part_file);
+      fprintf(part_file, "%s\t%s\t%s\t%s\n", lines[i]->ip, lines[i]->fecha, lines[i]->metodo, lines[i]->url);
+      fprintf(stdout, "%s\t%s\t%s\t%s\n", lines[i]->ip, lines[i]->fecha, lines[i]->metodo, lines[i]->url);
     }
     fclose(part_file);
     return true;

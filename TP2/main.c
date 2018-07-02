@@ -38,21 +38,15 @@ int main (int argc,char* argv[]){
     char* buffer = NULL;
     size_t size = 0;
     while(!error_command && getline(&buffer,&size,stdin)>0 ){
-        printf("%s", buffer);
+        //printf("%s", buffer);
         char** command = split(buffer,' ');
         switch (analizar_comando(command)){
             case 1:
-                if(last_file){
-                    free(last_file);
-                }
-                last_file = strndup(command[2],strlen(command[2])-1);
+                last_file = strndup(command[2], strlen(command[2])-1);
                 error_command = ordenar_archivo(command[1],last_file,max_memory);
                 break;
             case 2:
-                if(last_file){
-                    free(last_file);
-                }
-                last_file = strndup(command[1],strlen(command[1])-1);
+                last_file = strndup(command[1], strlen(command[1])-1);
                 error_command = agregar_archivo(last_file, &abb);
                 break;
             case 3:
@@ -62,6 +56,10 @@ int main (int argc,char* argv[]){
                 error_command = true;
                 break;
         }
+        if(last_file){
+            free(last_file);
+            last_file = NULL;
+        }
         print_result(error_command,command[0]);
         free_strv(command);
         free(buffer);
@@ -69,9 +67,6 @@ int main (int argc,char* argv[]){
         size = 0;
     }
     free(buffer);
-    if(last_file){
-        free(last_file);
-    }
     abb_destruir(abb);
     return 0;
 }
