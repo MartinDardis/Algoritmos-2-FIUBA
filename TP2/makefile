@@ -26,7 +26,7 @@ pruebas: programa
 	cat pruebas/pruebavol.txt | valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./programa 200
 
 pruebavol: programa
-	 cat pruebas/pruebavol.txt | valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./programa 200
+	 cat pruebas/pruebavol.txt | valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./programa 50
 
 
 gdb: programa
