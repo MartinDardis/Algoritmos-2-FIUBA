@@ -16,8 +16,18 @@ all: $(OBJ)
 %.o: %.c
 	$(CC) $(FLAGS_COMPILE) -c  $< >$@
 
+prueba: programa
+	valgrind --leak-check=full --track-origins=yes --show-reachable=yes cat pruebas/prueba3.txt | ./programa 200
+
 pruebas: programa
-	valgrind --leak-check=full --track-origins=yes --show-reachable=yes cat pruebas.txt | ./programa 200
+	valgrind --leak-check=full --track-origins=yes --show-reachable=yes cat pruebas/prueba1.txt | ./programa 200
+	valgrind --leak-check=full --track-origins=yes --show-reachable=yes cat pruebas/prueba2.txt | ./programa 200
+	valgrind --leak-check=full --track-origins=yes --show-reachable=yes cat pruebas/prueba3.txt | ./programa 200
+	valgrind --leak-check=full --track-origins=yes --show-reachable=yes cat pruebas/pruebavol.txt | ./programa 200
+
+pruebavol: programa
+	valgrind --leak-check=full --track-origins=yes --show-reachable=yes cat pruebas/pruebavol.txt | ./programa 200
+
 
 gdb: programa
 	gdb -tui ./programa

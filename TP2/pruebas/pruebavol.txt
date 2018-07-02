@@ -1,0 +1,23 @@
+ordenar_archivo logs/access001.log logs/access001-ordenado.log
+agregar_archivo logs/access001-ordenado.log
+ordenar_archivo logs/access002.log logs/access002-ordenado.log
+agregar_archivo logs/access002-ordenado.log
+ordenar_archivo logs/access003.log logs/access003-ordenado.log
+agregar_archivo logs/access003-ordenado.log
+ordenar_archivo logs/access004.log logs/access004-ordenado.log
+agregar_archivo logs/access004-ordenado.log
+ordenar_archivo logs/access005.log logs/access005-ordenado.log
+agregar_archivo logs/access005-ordenado.log
+ordenar_archivo logs/access006.log logs/access006-ordenado.log
+agregar_archivo logs/access006-ordenado.log
+ordenar_archivo logs/access007.log logs/access007-ordenado.log
+agregar_archivo logs/access007-ordenado.log
+ordenar_archivo logs/access008.log logs/access008-ordenado.log
+agregar_archivo logs/access008-ordenado.log
+ordenar_archivo logs/access009.log logs/access009-ordenado.log
+agregar_archivo logs/access009-ordenado.log
+ordenar_archivo logs/access010.log logs/access010-ordenado.log
+agregar_archivo logs/access010-ordenado.log
+ordenar_archivo logs/access011.log logs/access011-ordenado.log
+agregar_archivo logs/access011-ordenado.log
+ver_visitantes 200.0.0.0 202.255.255.255

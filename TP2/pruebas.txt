@@ -1,1 +1,0 @@
-agregar_archivo logs/prueba3.log

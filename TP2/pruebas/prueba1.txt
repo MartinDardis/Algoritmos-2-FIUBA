@@ -1,0 +1,2 @@
+agregar_archivo logs/access001.log
+agregar_archivo logs/access002.log

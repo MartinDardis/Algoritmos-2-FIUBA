@@ -38,6 +38,7 @@ int main (int argc,char* argv[]){
     char* buffer = NULL;
     size_t size = 0;
     while(!error_command && getline(&buffer,&size,stdin)>0 ){
+        printf("%s", buffer);
         char** command = split(buffer,' ');
         switch (analizar_comando(command)){
             case 1:
@@ -81,7 +82,6 @@ size_t analizar_comando(char** command){
     while(command[contador_parametros]){
         contador_parametros++;
     }
-    contador_parametros--;
     if( strcmp(command[0],ORDENAR) == 0){
         if(contador_parametros == 3){
             selec = 1;
@@ -89,14 +89,14 @@ size_t analizar_comando(char** command){
             selec = 4;
         }
     }
-    else if (strcmp(command,AGREGAR) == 0){
+    else if (strcmp(command[0],AGREGAR) == 0){
         if(contador_parametros == 2){
             selec = 2;
         } else {
             selec = 4;
         }
     }
-    else if (strcmp(command,VER) == 0){
+    else if (strcmp(command[0],VER) == 0){
         if(contador_parametros == 3){
             selec = 3;
         } else {
