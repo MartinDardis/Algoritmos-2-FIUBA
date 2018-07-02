@@ -299,7 +299,7 @@ bool hash_iter_avanzar(hash_iter_t *iter){
 
 // Crea iterador
 hash_iter_t *hash_iter_crear(const hash_t *hash){
-  hash_iter_t* iter = malloc(sizeof(hash_iter_t));
+    hash_iter_t* iter = malloc(sizeof(hash_iter_t));
     if(!iter){
         return NULL;
     }

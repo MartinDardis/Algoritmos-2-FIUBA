@@ -12,7 +12,7 @@
 #define AGREGAR "agregar_archivo"
 #define VER "ver_visitantes"
 /**************************** FUNCIONES INTERNAS ******************************/
-size_t analizar_comando(char* command);
+size_t analizar_comando(char** command);
 void print_result(bool state,char* command);
 /*****************************************************************************/
 
@@ -39,7 +39,7 @@ int main (int argc,char* argv[]){
     size_t size = 0;
     while(!error_command && getline(&buffer,&size,stdin)>0 ){
         char** command = split(buffer,' ');
-        switch (analizar_comando(command[0])){
+        switch (analizar_comando(command)){
             case 1:
                 if(last_file){
                     free(last_file);
@@ -75,16 +75,33 @@ int main (int argc,char* argv[]){
     return 0;
 }
 
-size_t analizar_comando(char* command){
+size_t analizar_comando(char** command){
     size_t selec = 0;
-    if( strcmp(command,ORDENAR) == 0){
-        selec = 1;
+    size_t contador_parametros = 0;
+    while(command[contador_parametros]){
+        contador_parametros++;
+    }
+    contador_parametros--;
+    if( strcmp(command[0],ORDENAR) == 0){
+        if(contador_parametros == 3){
+            selec = 1;
+        } else {
+            selec = 4;
+        }
     }
     else if (strcmp(command,AGREGAR) == 0){
-        selec = 2;
+        if(contador_parametros == 2){
+            selec = 2;
+        } else {
+            selec = 4;
+        }
     }
     else if (strcmp(command,VER) == 0){
-        selec = 3;
+        if(contador_parametros == 3){
+            selec = 3;
+        } else {
+            selec = 4;
+        }
     }
     return selec;
 }
