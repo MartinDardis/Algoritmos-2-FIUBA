@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
-#define LINE_SIZE 200
+#define LINE_SIZE 300
 #include "tp2.h"
 #include "heap.h"
 #include "lista.h"
@@ -11,7 +11,7 @@ typedef struct log{
     char ip[20];
     char fecha[30];
     char metodo[5];
-    char url[145];
+    char url[245];
 }log_t;
 
 typedef struct adhoc{
@@ -76,7 +76,8 @@ bool ordenar_archivo(const char* input_file,const char* output_file,const size_t
     bool error = false;
     size_t num_parts = 0;
     error = divide_and_sort(input,lines_in_parts,&num_parts);
-    error = merge_files(output,num_parts);//tendrias que revisar si error es true antes de llamar esto y pisar el valor
+    if(!error) 
+    	error = merge_files(output,num_parts);//tendrias que revisar si error es true antes de llamar esto y pisar el valor
     system("rm *.part");
     fclose(input);
     fclose(output);
