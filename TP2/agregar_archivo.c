@@ -82,7 +82,7 @@ void destruir(void* dato){
 }
 
 int ipcmp_inv(const void* a,const void* b){
-  return (0 - ipcmp((char*)a,(char*)b));
+  return ((-1) * ipcmp((char*)a,(char*)b));
 }
 
 hash_t* generar_hash(const char* file, abb_t** puntero_abb){ //REVISAR nombre
@@ -130,6 +130,6 @@ double diferencia_tiempo(const char* a,const char* b){
 }
 
 void imprimir_dos(void* ip){
-  printf("DoS: %s\n",(char*) ip);
+  printf("DoS: %s\t\n",(char*) ip);
   free(ip);
 }

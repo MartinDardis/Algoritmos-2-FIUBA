@@ -46,7 +46,7 @@ int line_cmp (const void* a,const void*b){
 int heap_cmp (const void* a,const void*b){
     adhoc_t* left = (adhoc_t*) a;
     adhoc_t* right = (adhoc_t*) b;
-    int resultado = 0 - line_cmp(&(left->data),&(right->data));
+    int resultado = (-1) * line_cmp(&(left->data),&(right->data));
     return resultado;
 }
 /*****************************************************************************/
@@ -72,7 +72,7 @@ bool ordenar_archivo(const char* input_file,const char* output_file,const size_t
     bool error = false;
     size_t num_parts = 0;
     error = divide_and_sort(input,lines_in_parts,&num_parts);
-    if(!error)
+    if(error)
     	error = merge_files(output,num_parts);//tendrias que revisar si error es true antes de llamar esto y pisar el valor
     system("rm *.part");
     fclose(input);
@@ -99,19 +99,20 @@ log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
     size_t counter = 0;
     char* buffer = NULL;
     size_t cant = 0;
-    while((counter < max_lines) && getline(&buffer,&cant,input) > 0){
+    while( counter < max_lines && getline(&buffer,&cant,input) > 0 ){
         logs[counter] = malloc(sizeof(log_t));
         char** split_l = split(buffer,'\t');// divido la linea
         strcpy(logs[counter]->ip,split_l[0]);
         strcpy(logs[counter]->fecha,split_l[1]);
         strcpy(logs[counter]->metodo,split_l[2]);
-        if(split_l[3] == NULL)
-            strcpy(logs[counter]->url,"\0");
+        if (split_l[3]){
+          strcpy(logs[counter]->url,split_l[3]);
+        }
         else
-            strcpy(logs[counter]->url,split_l[3]);
+          strcpy(logs[counter]->url,"\n\0");
         free_strv(split_l);
-        cant = 0;
         free(buffer);
+        buffer = NULL;
         counter++;
     }
     (*read_lines) = counter;
@@ -122,8 +123,7 @@ bool save_lines(log_t** lines,size_t part_file_num,size_t top){
     FILE* part_file = create_part_file(part_file_num);
     if(!part_file) return false;
     for(size_t i=0;i<top;i++){
-      fprintf(part_file, "%s\t%s\t%s\t%s\n", lines[i]->ip, lines[i]->fecha, lines[i]->metodo, lines[i]->url);
-      fprintf(stdout, "%s\t%s\t%s\t%s\n", lines[i]->ip, lines[i]->fecha, lines[i]->metodo, lines[i]->url);
+      fwrite(lines[i],sizeof(log_t),1,part_file);
     }
     fclose(part_file);
     return true;
@@ -169,7 +169,7 @@ heap_t* heapifile(FILE* files[],size_t num_parts){
 }
 
 bool open_part_files(FILE* files [],size_t num_parts){
-    for(size_t i=0 ; i<num_parts;i++){
+    for(size_t i = 0 ; i<num_parts;i++){
         char file_name[30];
         sprintf(file_name,"%i.part",(int)i);
         files[i] = fopen(file_name,"r");
@@ -194,7 +194,7 @@ bool load_heap(heap_t* out_heap,FILE* files[],size_t file_to_read){
 bool write_out(heap_t* out_heap,FILE* output,FILE* files[],size_t num_parts){
     while (! heap_esta_vacio(out_heap)) {
         adhoc_t* to_save = heap_desencolar(out_heap);
-        fprintf(output,"%s\t%s\t%s\t%s\n",(to_save->data).ip,(to_save->data).fecha,(to_save->data).metodo,(to_save->data).url);
+        fprintf(output,"%s\t%s\t%s\t%s",(to_save->data).ip,(to_save->data).fecha,(to_save->data).metodo,(to_save->data).url);
         size_t to_load = to_save->file_num;
         free(to_save);
         if(!load_heap(out_heap,files,to_load)) return false;
