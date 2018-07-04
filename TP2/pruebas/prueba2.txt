@@ -1,4 +1,4 @@
-ordenar_archivo logs/access010.log logs/access010-ordenado.log
+ordenar_archivo logs/access010.log logs/access010-ord.log
 agregar_archivo logs/access010-ordenado.log
 agregar_archivo logs/access004.log
 ver_visitantes 200.49.0.0 201.30.0.0

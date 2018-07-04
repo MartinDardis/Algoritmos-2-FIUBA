@@ -130,6 +130,6 @@ double diferencia_tiempo(const char* a,const char* b){
 }
 
 void imprimir_dos(void* ip){
-  printf("DoS: %s\t\n",(char*) ip);
+  printf("DoS: %s\n",(char*) ip);
   free(ip);
 }

@@ -1,2 +1,6 @@
+ordenar_archivo logs/access001.log logs/access001_ord.log
 agregar_archivo logs/access001.log
+ordenar_archivo logs/access002.log logs/access002_ord.log
 agregar_archivo logs/access002.log
+ver_visitantes 0.0.0.0 5.0.0.0
+ordenar_archivo logs/access011.log logs/access011_ord.log
