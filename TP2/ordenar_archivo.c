@@ -25,6 +25,7 @@ registro_t leer_registro(const char* linea){
     strcpy(registro.fecha, vector[1]);
     strcpy(registro.metodo, vector[2]);
     strcpy(registro.url, vector[3]);
+    free_strv(vector);
     return registro;
 }
 
@@ -88,6 +89,7 @@ bool escribir_auxiliar(heap_t* heap, size_t contador_archivos_auxiliares){
     while(!heap_esta_vacio(heap)){
         char* linea = heap_desencolar(heap);
         fprintf(auxiliar, "%s", linea);
+        free(linea);
     }
 
     fclose(auxiliar);
@@ -119,7 +121,6 @@ void unir_archivos(FILE* output, size_t numero_archivos){
         sprintf(nombre_de_auxiliar, "%s%i%s", ARCHIVO_AUXILIAR, i, EXTENSION);
         arreglo_archivos[i] = fopen(nombre_de_auxiliar, "r");
         getline(&linea, &capacidad, arreglo_archivos[i]);
-
         registro_numerado_t* registro_numerado = registro_numerado_crear(linea, i);
         linea = NULL;
         capacidad = 0;
