@@ -5,17 +5,17 @@ MAIN = main.c
 SORT_FILE = tp2.c
 ADD_FILE = agregar_archivo.c
 VIEW_VISIT = ver_visitantes.c
-OBJ =  hash.o heap.o abb.o strutil.o pila.o lista.o main.o tp2.o agregar_archivo.o ver_visitantes.o
+OBJ =  hash.o heap.o abb.o strutil.o pila.o lista.o main.o tp2.o agregar_archivo.o ver_visitantes.o ordenar_archivo.o
 
 build_lib:
 	$(CC) -c $(FLAGS_COMPILE) $(LIBRARY)
 
 all: $(OBJ)
 	$(CC) $(FLAGS_COMPILE) *.o -o programa
-	rm *.o
 
 %.o: %.c
-	$(CC) $(FLAGS_COMPILE) -c  $< >$@
+	$(CC) $(FLAGS_COMPILE) -c  $< > $@
+
 
 prueba: programa
 	cat pruebas/prueba3.txt | valgrind --leak-check=full --track-origins=yes --show-reachable=yes  ./programa 200
