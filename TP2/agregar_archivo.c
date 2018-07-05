@@ -69,7 +69,10 @@ bool agregar_archivo(const char* file, abb_t** puntero_abb){
         hash_iter_avanzar(hash_iter);
     }
 
-    heap_destruir(heap,imprimir_dos);
+    while(!heap_esta_vacio(heap)){
+        imprimir_dos(heap_desencolar);
+    }
+    heap_destruir(heap, NULL);
     hash_iter_destruir(hash_iter);
     hash_destruir(hash);
     return RET_OK;
