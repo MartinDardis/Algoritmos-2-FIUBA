@@ -62,10 +62,18 @@ bool agregar_archivo(const char* file, abb_t** puntero_abb){
         if(!ip_actual_ataco) free(ip);
         hash_iter_avanzar(hash_iter);
     }
+<<<<<<< HEAD
     while(!heap_esta_vacio(heap)){
       imprimir_dos(heap_desencolar(heap));
     }
     heap_destruir(heap,NULL);
+=======
+
+    while(!heap_esta_vacio(heap)){
+        imprimir_dos(heap_desencolar);
+    }
+    heap_destruir(heap, NULL);
+>>>>>>> fd81fe9fc99f6bf8666d99ef2c4129a4c79c9f7f
     hash_iter_destruir(hash_iter);
     hash_destruir(hash);
     return RET_OK;
