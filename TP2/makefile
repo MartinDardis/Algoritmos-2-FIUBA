@@ -7,8 +7,7 @@ ADD_FILE = agregar_archivo.c
 VIEW_VISIT = ver_visitantes.c
 OBJDIR = bin
 
-objects = $(addprefix $(OBJDIR)/,hash.o heap.o abb.o strutil.o pila.o lista.o main.o tp2.o agregar_archivo.o ver_visitantes.o ordenar_archivo.o)
-
+objects = $(addprefix $(OBJDIR)/,hash.o heap.o abb.o strutil.o pila.o lista.o main.o tp2.o agregar_archivo.o ver_visitantes.o)
 build_lib:
 	$(CC) -c $(FLAGS_COMPILE) $(LIBRARY)
 

@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 #define LINE_SIZE 200
 #include "tp2.h"
-/*
+
 
 typedef struct log{
     char ip[20];
@@ -14,7 +14,7 @@ typedef struct adhoc{
     size_t file_num;
     log_t data;
 }adhoc_t;
-*/
+
 /************************* FUNCIONES DE COMPARACION***************************/
 int ipcmp (const char* s1,const char* s2){
     char** left = split(s1,'.');
@@ -29,7 +29,7 @@ int ipcmp (const char* s1,const char* s2){
     free_strv(right);
     return resultado;
 }
-/*
+
 int line_cmp (const void* a,const void*b){
     int resultado;
     resultado = strcmp(((log_t*)a)->fecha , ((log_t*)b)->fecha);
@@ -51,10 +51,10 @@ int heap_cmp (const void* a,const void*b){
     int resultado = (-1) * line_cmp(&(left->data),&(right->data));
     return resultado;
 }
-*/
+
 /*****************************************************************************/
 /************************* Primitivas internas *******************************/
-/*
+
 bool divide_and_sort(FILE* input,size_t max_lines,size_t* parts);
 log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines);
 bool save_lines(log_t** lines,size_t part_file_num,size_t top);
@@ -65,9 +65,9 @@ heap_t* heapifile(FILE* files[],size_t num_parts);
 bool open_part_files(FILE* files [],size_t num_parts);
 bool load_heap(heap_t* out_heap,FILE* files[],size_t file_to_read);
 bool write_out(heap_t* out_heap,FILE* output,FILE* files[],size_t num_parts);
-*/
+
 /*****************************************************************************/
-/*
+
 bool ordenar_archivo(const char* input_file,const char* output_file,const size_t max_memory){
     if(!input_file || !output_file) return RET_ERROR;
     FILE* input = fopen(input_file,"rt");
@@ -207,4 +207,3 @@ bool write_out(heap_t* out_heap,FILE* output,FILE* files[],size_t num_parts){
     }
     return true;
 }
-*/

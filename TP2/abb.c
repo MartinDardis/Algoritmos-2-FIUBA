@@ -339,13 +339,13 @@ void abb_in_order_desde_hasta_recursivo(abb_t *arbol, nodo_abb_t* nodo, bool vis
         return;
     }
     if(*iterar && (arbol->cmp(desde, nodo->clave) < 0)){
-        abb_in_order_desde_hasta_recursivo(arbol, nodo->hijo_izq, visitar, extra, iterar, desde, hasta);
+        abb_in_order_desde_hasta_recursivo(arbol, nodo->hijo_izq, visitar, extra,iterar, desde, hasta);
     }
     if(*iterar && (arbol->cmp(desde, nodo->clave) <= 0) && (arbol->cmp(hasta, nodo->clave) >= 0)){
         *iterar = visitar(nodo->clave, nodo->dato, extra);
     }
     if(*iterar && (arbol->cmp(hasta, nodo->clave) > 0)){
-        abb_in_order_desde_hasta_recursivo(arbol, nodo->hijo_der, visitar, extra, iterar, desde, hasta);
+        abb_in_order_desde_hasta_recursivo(arbol, nodo->hijo_der, visitar, extra,iterar, desde, hasta);
     }
     return;
 }

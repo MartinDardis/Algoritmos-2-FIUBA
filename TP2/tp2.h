@@ -1,4 +1,3 @@
-#define _POSIX_C_SOURCE 200809L
 #ifndef TP2_H
 #define TP2_H
 

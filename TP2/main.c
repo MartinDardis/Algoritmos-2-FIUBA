@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "mensajes.h"//Biblioteca con mensajes a imprimir
 #include "tp2.h"
 
 
@@ -11,6 +10,9 @@
 #define ORDENAR "ordenar_archivo"
 #define AGREGAR "agregar_archivo"
 #define VER "ver_visitantes"
+#define ERROR -1
+#define CANT_PARAM_INCORRECTO "Cantidad de parametros invalida"
+#define PARAM_INVALIDO "Parametro Incorrecto"
 /**************************** FUNCIONES INTERNAS ******************************/
 size_t analizar_comando(char** command);
 void print_result(bool state,char* command);
@@ -38,7 +40,6 @@ int main (int argc,char* argv[]){
     char* buffer = NULL;
     size_t size = 0;
     while(!error_command && getline(&buffer,&size,stdin)>0 ){
-        //printf("%s", buffer);
         char** command = split(buffer,' ');
         switch (analizar_comando(command)){
             case 1:
@@ -100,16 +101,14 @@ size_t analizar_comando(char** command){
     }
     return selec;
 }
+
 void print_result(bool state,char* command){
     if (state){
-        fprintf(stderr, "Error en comando %s\n",command);
+        if(strcmp(command,"ver_visitantes\n") == 0)
+          fprintf(stderr, "Error en comando %s",command);
+        else
+          fprintf(stderr, "Error en comando %s\n",command);
     } else {
         fprintf(stdout,"OK\n");
     }
 }
-
-/*
-agregar_archivo logs/prueba1.log
-ver_visitantes 0.0.0.0 255.255.255.255
-
-*/
