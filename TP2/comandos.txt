@@ -1,2 +1,2 @@
-agregar_archivo logs/access001.log
-ver_visitantes 0.0.0.0 100.0.0.0
+agregar_archivo logs/access_ord.log
+ver_visitantes 0.0.0.0 999.999.999.999

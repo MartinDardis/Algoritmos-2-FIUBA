@@ -28,5 +28,6 @@ bool input_verify(const char* input){
   }
   if(input_split[4])
     error = true;
+  free_strv(input_split);
   return error;
 }

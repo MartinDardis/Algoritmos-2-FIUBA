@@ -6,7 +6,7 @@
 typedef struct log{
     char ip[20];
     char fecha[30];
-    char metodo[5];
+    char metodo[20];
     char url[145];
 }log_t;
 
@@ -59,6 +59,7 @@ bool divide_and_sort(FILE* input,size_t max_lines,size_t* parts);
 log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines);
 bool save_lines(log_t** lines,size_t part_file_num,size_t top);
 FILE* create_part_file(size_t part);
+log_t* log_create();
 void free_lines(log_t**lines,size_t top);
 bool merge_files(FILE* output,size_t num_parts);
 heap_t* heapifile(FILE* files[],size_t num_parts);
@@ -102,25 +103,30 @@ bool divide_and_sort(FILE* input,size_t max_lines,size_t* parts){
 
 log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
     log_t** logs = malloc(sizeof(log_t*) * max_lines);
+    if(!logs) return NULL;
+    for(int i=0;i<max_lines;i++)
+	    logs[i]=NULL;
     size_t counter = 0;
     char* buffer = NULL;
     size_t cant = 0;
     while( counter < max_lines && getline(&buffer,&cant,input) > 0 ){
-        logs[counter] = malloc(sizeof(log_t));
+        logs[counter] = log_create();
         char** split_l = split(buffer,'\t');// divido la linea
         strcpy(logs[counter]->ip,split_l[0]);
         strcpy(logs[counter]->fecha,split_l[1]);
-        strcpy(logs[counter]->metodo,split_l[2]);
-        if (split_l[3]){
-          strcpy(logs[counter]->url,split_l[3]);
-        }
+	      strcpy(logs[counter]->metodo,split_l[2]);
+        if (split_l[3] && strlen(split_l[3])>0)
+          strncpy(logs[counter]->url,split_l[3],strlen(split_l[3])-1);
         else
-          strcpy(logs[counter]->url,"\n\0");
+          strcpy(logs[counter]->url," ");
+        if(split_l[4])
+          printf("%s\n",split_l[4] );
         free_strv(split_l);
         free(buffer);
         buffer = NULL;
         counter++;
     }
+    if(buffer) free(buffer);
     (*read_lines) = counter;
     return logs;
 }
@@ -128,8 +134,9 @@ log_t** read_lines(FILE* input,size_t max_lines,size_t* read_lines){
 bool save_lines(log_t** lines,size_t part_file_num,size_t top){
     FILE* part_file = create_part_file(part_file_num);
     if(!part_file) return false;
-    for(size_t i=0;i<top;i++){
-      fwrite(lines[i],sizeof(log_t),1,part_file);
+    for(size_t i=0;lines && i<top;i++){
+	if(lines[i])
+     		fwrite(lines[i],sizeof(log_t),1,part_file);
     }
     fclose(part_file);
     return true;
@@ -148,6 +155,15 @@ void free_lines(log_t**lines,size_t top){
     }
     free(lines);
 }
+log_t* log_create(){
+  log_t* logs = malloc(sizeof(log_t));
+  if(!logs) return NULL;
+  memset(logs->ip,'\0',20);
+  memset(logs->fecha,'\0',30);
+  memset(logs->metodo,'\0',20);
+  memset(logs->url,'\0',145);
+  return logs;
+}
 
 bool merge_files(FILE* output,size_t num_parts){
     FILE** files = malloc(sizeof(FILE*) * num_parts);
@@ -162,11 +178,18 @@ bool merge_files(FILE* output,size_t num_parts){
     return estate;
 }
 
+void clear_memory(log_t *logs){
+  memset(logs->ip,'\0',20);
+  memset(logs->fecha,'\0',30);
+  memset(logs->metodo,'\0',20);
+  memset(logs->url,'\0',145);
+}
 heap_t* heapifile(FILE* files[],size_t num_parts){
   adhoc_t** to_heap = malloc(sizeof(adhoc_t*) * num_parts);
-  for(size_t i = 0; i < num_parts ;i++){
+  for(size_t i = 0; i < num_parts && !feof(files[i]) ;i++){
     to_heap[i] = malloc(sizeof(adhoc_t));
     to_heap[i]->file_num = i;
+    clear_memory(&to_heap[i]->data);
     fread(&(to_heap[i]->data),sizeof(log_t),1,files[i]);
   }
   heap_t* heap = heap_crear_arr((void*)to_heap,num_parts,heap_cmp);
@@ -200,7 +223,8 @@ bool load_heap(heap_t* out_heap,FILE* files[],size_t file_to_read){
 bool write_out(heap_t* out_heap,FILE* output,FILE* files[],size_t num_parts){
     while (! heap_esta_vacio(out_heap)) {
         adhoc_t* to_save = heap_desencolar(out_heap);
-        fprintf(output,"%s\t%s\t%s\t%s",(to_save->data).ip,(to_save->data).fecha,(to_save->data).metodo,(to_save->data).url);
+        if(strlen((to_save->data).ip) > 5 )
+          fprintf(output,"%s\t%s\t%s\t%s\n",(to_save->data).ip,(to_save->data).fecha,(to_save->data).metodo,(to_save->data).url);
         size_t to_load = to_save->file_num;
         free(to_save);
         if(!load_heap(out_heap,files,to_load)) return false;
