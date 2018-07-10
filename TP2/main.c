@@ -25,7 +25,7 @@
 #define COM_VIEW 3
 #define COM_ERR 0
 /**************************** FUNCIONES INTERNAS ******************************/
-size_t analizar_comando(char** command);
+size_t analizar_comando(char* command);
 void print_result(bool state,char* command);
 /*****************************************************************************/
 
@@ -54,10 +54,11 @@ int main (int argc,char* argv[]){
         char** command = split(buffer,' ');
         switch (analizar_comando(command[COMM])){
             case 1:
-                last_file = strndup(command[PARAM_2], strlen(command[PARAM_2])-1);
-                error_command = ordenar_archivo(command[PARAM_1],last_file,max_memory);
+                error_command = ordenar_archivo(command[PARAM_1],command[PARAM_2],max_memory);
                 break;
             case 2:
+                if(!command[PARAM_1])
+                  break;
                 last_file = strndup(command[PARAM_1], strlen(command[PARAM_1])-1);
                 error_command = agregar_archivo(last_file, &abb);
                 break;

@@ -71,9 +71,12 @@ bool write_out(heap_t* out_heap,FILE* output,FILE* files[],size_t num_parts);
 
 bool ordenar_archivo(const char* input_file,const char* output_file,const size_t max_memory){
     if(!input_file || !output_file) return RET_ERROR;
+    if(strlen(input_file) <= 0 || strlen(output_file) <= 0) return RET_ERROR;
     FILE* input = fopen(input_file,"rt");
     if(!input) return RET_ERROR;
-    FILE* output = fopen(output_file,"wt");
+    char* temp = strndup(output_file,strlen(output_file)-1);
+    FILE* output = fopen(temp,"wt");
+    free(temp);
     if(!output) {fclose(input); return RET_ERROR;}
     size_t lines_in_parts = (max_memory*1000)/LINE_SIZE;
     bool error = false;
