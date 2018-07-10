@@ -1,5 +1,4 @@
 
-
 def orden_topologico(grafo):
     visitados = set()
     pila = pila_crear()
@@ -19,7 +18,7 @@ def camino_minimo(grafo, origen):
     dist = {}
     padre = {}
     for v in grafo.vertices():
-        dist[v] = #infinito
+        dist[v] = 9999 #infinito
     dist[origen] = 0
     padre[origen] = none
     q = heap_crear()
