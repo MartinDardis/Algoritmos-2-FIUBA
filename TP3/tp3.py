@@ -1,7 +1,7 @@
 
 def orden_topologico(grafo):
     visitados = set()
-    pila = pila_crear()
+    pila = Pila()
     for v in grafo.vertices():
         if v not in visitados:
             orden_topologico_dfs(grafo, v, pila, visitados)
@@ -12,7 +12,7 @@ def orden_topologico_dfs(grafo, v, pila, visitados):
     for w in grafo.adyacentes(v):
         if w not in visitados:
             orden_topologico_dfs(grafo, w, pila, visitados)
-    pila_apilar(v)
+    pila.apilar(v)
 
 def camino_minimo(grafo, origen):
     dist = {}
@@ -37,7 +37,7 @@ def mst_prim(grafo, inicio):
     visitados.agregar(inicio)
     q = heap_crear()
     for w in grafo.adyacentes(inicio)
-        q.encolar((inicio, w), grafo.peso_arsta(inicio,w))
+        q.encolar((inicio, w), grafo.peso_arista(inicio,w))
     arbol = grafo_crear(grafo.vertices)
     while not q.esta_vacia():
         (v, w) = q.desencolar()
@@ -51,10 +51,10 @@ def mst_prim(grafo, inicio):
 
 def viajante_backtracing(grafo, inicio):
     visitados = set()
-    minimo = #infinito
+    minimo = 99999 #infinito
     peso_actual = 0
     resultados = set()
-    pila = pila()
+    pila = Pila()
     viajante_backtracing_recursivo(grafo, inicio, inicio, visitados, peso, minimo, pila, resultados)
     return resultados
 
@@ -75,10 +75,27 @@ def viajante_backtracing_recursivo(grafo, inicio, v, visitados, peso, minimo, pi
             todos_visitados = false
 
     if todos_visitados:
-        pila_apilar(inicio)
+        pila.apilar(inicio)
         lista = pila_a_lista(pila)
         if peso < minimo:
             while len(resultados) > 0:
                 resultados.pop()
         resultados.append(lista)
     visitados.remove(v)
+
+def viajante_greedy(grafo, inicio):
+    visitados = set()
+    pila = Pila()
+    v = inicio
+    while v not in todos_visitados:
+        visitados.append(v)
+        minimo = 99999 #infinito
+        for w in v.adyacentes():
+            if peso_arista(v, w) < minimo:
+                minimo = peso_arista(v, w)
+                vertice = w
+        pila.apilar(w)
+        v = w
+    pila.apilar(inicio)
+    lista = pila_a_lista(pila)
+    return lista
