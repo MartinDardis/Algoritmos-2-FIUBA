@@ -1,3 +1,7 @@
+from cola import *
+from pila import *
+from heap import *
+from grafo import *
 
 def orden_topologico(grafo):
     visitados = set()
@@ -20,21 +24,22 @@ def orden_topologico_dfs(grafo, v, pila, visitados, grados):
                 orden_topologico_dfs(grafo, w, pila, visitados)
 
 def camino_minimo(grafo, origen, fin):
+    print('llegue')
     dist = {}
     padre = {}
-    for v in grafo.vertices():
+    for v in grafo.vertices:
         dist[v] = 99999 #infinito
     dist[origen] = 0
-    padre[origen] = none
-    q = Heap()
-    q.encolar(origen)
-    while not q.esta_vacia():
-        v = q_desencolar()
+    padre[origen] = None
+    heap = Heap()
+    heap.encolar(origen)
+    while not heap.esta_vacia():
+        v = heap.desencolar()
         for w in grafo.adyacentes(v):
-            if dist[v] + grafo.peso_arista(v, w) < dist[w]
+            if dist[v] + grafo.peso_arista(v, w) < dist[w]:
                 padre[w] = v
                 dist[w] = dist[v] + grafo.peso_arista(v,w)
-                q.encolar(w)
+                heap.encolar(w)
 
     pila = Pila()
     v = fin
@@ -43,25 +48,25 @@ def camino_minimo(grafo, origen, fin):
         v = padre[v]
 
     lista = []
-    for i in range len(pila)
+    for i in range(len(pila)):
         lista.append[pila.desapilar()]
     return lista
 
 def mst_prim(grafo, inicio):
     visitados = set()
     visitados.agregar(inicio)
-    q = heap_crear()
-    for w in grafo.adyacentes(inicio)
-        q.encolar((inicio, w), grafo.peso_arista(inicio,w))
-    arbol = grafo_crear(grafo.vertices)
-    while not q.esta_vacia():
-        (v, w) = q.desencolar()
+    heap = Heapq()
+    for w in grafo.adyacentes(inicio):
+        heap.encolar((inicio, w), grafo.peso_arista(inicio,w))
+    arbol = Grafo(grafo.vertices)
+    while not heap.esta_vacia():
+        (v, w) = heap.desencolar()
         if w in visitados:
             continue
         argol.agregar_arista(v, w, grafo.peso_arista(v, w))
         visitados.agregar(w)
-        for u in grafo.adyacentes(w)
-            q.encolar((w, u), grafo.peso_arista(w, u))
+        for u in grafo.adyacentes(w):
+            heap.encolar((w, u), grafo.peso_arista(w, u))
     return arbol
 
 def viajante_backtracing(grafo, inicio):
@@ -80,13 +85,13 @@ def viajante_backtracing_recursivo(grafo, inicio, v, visitados, peso, minimo, pi
             peso += peso_arista(v, w)
             if peso < minimo:
                 pila.apilar(w)
-                viajante_backtracing_recursivo(grafo, inicio, w, visitados, peso, minimo, pila, resultados):
+                viajante_backtracing_recursivo(grafo, inicio, w, visitados, peso, minimo, pila, resultados)
                 pila.desapilar()
             peso -= peso_arista(v, w)
 
     todos_visitados = true
     for u in grafo.vertices():
-        if u not int visitados:
+        if u not in visitados:
             todos_visitados = false
 
     if todos_visitados:
