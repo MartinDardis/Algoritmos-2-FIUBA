@@ -7,9 +7,9 @@ def orden_topologico(grafo):
     visitados = set()
     grados = {}
     pila = Pila()
-    for v in grafo.vertices():
+    for v in grafo.vertices:
         grados[v] = grafo.grado_entrada(v)
-    for v in grafo.vertices():
+    for v in grafo.vertices:
         if v not in visitados and grados[v] == 0:
             orden_topologico_dfs(grafo, v, pila, visitados, grados)
     return pila_a_lista(pila)
@@ -24,7 +24,6 @@ def orden_topologico_dfs(grafo, v, pila, visitados, grados):
                 orden_topologico_dfs(grafo, w, pila, visitados)
 
 def camino_minimo(grafo, origen, fin):
-    print('llegue')
     dist = {}
     padre = {}
     for v in grafo.vertices:
@@ -43,60 +42,70 @@ def camino_minimo(grafo, origen, fin):
 
     pila = Pila()
     v = fin
-    while v != inicio:
+    while v != None:
         pila.apilar(v)
         v = padre[v]
 
-    lista = []
-    for i in range(len(pila)):
-        lista.append[pila.desapilar()]
+    lista = pila.pila_a_lista()
     return lista
 
 def mst_prim(grafo, inicio):
-    visitados = set()
-    visitados.agregar(inicio)
-    heap = Heapq()
-    for w in grafo.adyacentes(inicio):
-        heap.encolar((inicio, w), grafo.peso_arista(inicio,w))
+    visitados = []
+    visitados.append(inicio)
+    heap = Heap()
+
+    for v in grafo.adyacentes(inicio):
+        arista = Arista(inicio, v, grafo.peso_arista(inicio,v))
+        heap.encolar(arista)
+
     arbol = Grafo(grafo.vertices)
+
     while not heap.esta_vacia():
-        (v, w) = heap.desencolar()
-        if w in visitados:
+        arista = heap.desencolar()
+        if arista.destino in visitados:
             continue
-        argol.agregar_arista(v, w, grafo.peso_arista(v, w))
-        visitados.agregar(w)
-        for u in grafo.adyacentes(w):
-            heap.encolar((w, u), grafo.peso_arista(w, u))
+        arbol.agregar_arista_doble(arista.origen, arista.destino, arista.peso)
+        visitados.append(arista.destino)
+
+        for w in grafo.adyacentes(arista.destino):
+            arista = Arista(arista.destino, w, grafo.peso_arista(arista.destino, w))
+            heap.encolar(arista)
+
     return arbol
 
 def viajante_backtracing(grafo, inicio):
-    visitados = set()
+    visitados = []
     minimo = 99999 #infinito
     peso_actual = 0
-    resultados = set()
+    resultados = []
     pila = Pila()
+    pila.apilar(inicio)
+    peso = 0
     viajante_backtracing_recursivo(grafo, inicio, inicio, visitados, peso, minimo, pila, resultados)
     return resultados
 
 def viajante_backtracing_recursivo(grafo, inicio, v, visitados, peso, minimo, pila, resultados):
     visitados.append(v)
+    print('\033[91m' + str(visitados) + '\033[0m')
     for w in grafo.adyacentes(v):
         if w not in visitados:
-            peso += peso_arista(v, w)
+            peso += grafo.peso_arista(v, w)
             if peso < minimo:
                 pila.apilar(w)
+                print('\033[94m' + str(w) + '\033[0m' + ' ' + str(pila))
                 viajante_backtracing_recursivo(grafo, inicio, w, visitados, peso, minimo, pila, resultados)
+                #print(pila)
                 pila.desapilar()
-            peso -= peso_arista(v, w)
+            peso -= grafo.peso_arista(v, w)
 
-    todos_visitados = true
-    for u in grafo.vertices():
+    todos_visitados = True
+    for u in grafo.vertices:
         if u not in visitados:
-            todos_visitados = false
+            todos_visitados = False
 
     if todos_visitados:
         pila.apilar(inicio)
-        lista = pila_a_lista(pila)
+        lista = pila.pila_a_lista()
         if peso < minimo:
             while len(resultados) > 0:
                 resultados.pop()
@@ -104,18 +113,18 @@ def viajante_backtracing_recursivo(grafo, inicio, v, visitados, peso, minimo, pi
     visitados.remove(v)
 
 def viajante_greedy(grafo, inicio):
-    visitados = set()
+    visitados = []
     pila = Pila()
     v = inicio
-    while v not in todos_visitados:
+    while v not in visitados:
         visitados.append(v)
         minimo = 99999 #infinito
         for w in grafo.adyacentes(v):
-            if peso_arista(v, w) < minimo:
-                minimo = peso_arista(v, w)
+            if grafo.peso_arista(v, w) < minimo:
+                minimo = grafo.peso_arista(v, w)
                 vertice = w
         pila.apilar(w)
         v = w
     pila.apilar(inicio)
-    lista = pila_a_lista(pila)
+    lista = pila.pila_a_lista()
     return lista

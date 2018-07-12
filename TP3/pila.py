@@ -20,3 +20,22 @@ class Pila:
         if self.esta_vacia():
             raise IndexError("La pila está vacía")
         return self.items.pop()
+
+    def __len__(self):
+        return len(self.items)
+
+    def __str__(self):
+        return str(self.items)
+
+    def pila_a_lista_recursivo(self, lista):
+        if self.esta_vacia():
+            return
+        valor = self.desapilar()
+        lista.append(valor)
+        self.pila_a_lista_recursivo(lista)
+        self.apilar(valor)
+
+    def pila_a_lista(self):
+        lista = []
+        self.pila_a_lista_recursivo(lista)
+        return lista

@@ -20,12 +20,12 @@ class Heap:
     def upheap(self, posc):
         if posc == 0:
             return
-        posc_padre = (posc-1)/2
+        posc_padre = int((posc-1)/2)
         if self.items[posc] < self.items[posc_padre]:
             return
 
-        swap(self.items[pos], self.items[posc_padre])
-        upheap(self, posc_padre)
+        swap(self.items[posc], self.items[posc_padre])
+        self.upheap(posc_padre)
 
     def downheap(self, posc_padre):
         cantidad = len(self.items)
@@ -34,17 +34,17 @@ class Heap:
         hijo_izq = (2*posc_padre)+1
         hijo_der = (2*posc_padre)+2
         posc_max = posc_padre
-        if hijo_izq < cantidad and arreglo[hijo_izq] > arreglo[posc_max]:
+        if hijo_izq < cantidad and self.items[hijo_izq] > self.items[posc_max]:
             posc_max = hijo_izq
 
-        if hijo_der < cantidad and arreglo[hijo_der] > arreglo[posc_max]:
+        if hijo_der < cantidad and self.items[hijo_der] > self.items[posc_max]:
             posc_max = hijo_der
 
         if posc_padre == posc_max:
             return
 
-        swap(arreglo[posc_padre], arreglo[posc_max])
-        downheap(self, posc_max)
+        swap(self.items[posc_padre], self.items[posc_max])
+        self.downheap(posc_max)
 
 
     def encolar(self, x):
