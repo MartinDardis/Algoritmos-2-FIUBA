@@ -51,6 +51,7 @@ class Heap:
         """Encola el elemento x."""
         self.items.append(x)
         self.upheap(len(self.items)-1)
+        self.items.sort()
 
     def desencolar(self):
         """Elimina el primer elemento de la cola y devuelve su
@@ -60,4 +61,12 @@ class Heap:
         swap(self.items[0], self.items[len(self.items)-1])
         valor = self.items.pop()
         self.downheap(0)
+        self.items.sort()
         return valor
+
+    def __str__(self):
+        string = str()
+        for i in self.items:
+            string += str(i)
+            string += '\t'
+        return string

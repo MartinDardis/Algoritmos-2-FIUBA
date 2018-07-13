@@ -21,6 +21,11 @@ class Pila:
             raise IndexError("La pila está vacía")
         return self.items.pop()
 
+    def ver_tope(self):
+        if self.esta_vacia():
+            raise IndexError("La pila está vacía")
+        return self.items[len(self.items)-1]
+
     def __len__(self):
         return len(self.items)
 

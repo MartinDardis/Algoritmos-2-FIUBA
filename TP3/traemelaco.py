@@ -5,12 +5,12 @@ from grafo import *
 
 city_file = argv[1]
 map_file = argv[2]
+topologic_file = 'ejemplo_recomendaciones.csv'
 
 grafo = Grafo()
 with open(city_file,'r') as cities:
 	mode = 0
 	for lines in cities:
-		print (lines)
 		if lines[0].isnumeric():
 			mode = mode + 1
 		elif mode == 1:
@@ -20,20 +20,30 @@ with open(city_file,'r') as cities:
 			data = lines.split(',')
 			grafo.agregar_arista_doble(data[0],data[1],int(data[2]))
 
-print('\033[92m grafo\n \033[0m')
+print('\033[92m grafo \033[0m')
 print(grafo)
-print('\033[92m Camino minimo entre Kaliningrado y Nizhni Novgorod\n \033[0m')
-lista = camino_minimo(grafo, 'Kaliningrado', 'Nizhni Novgorod')
-print (lista)
-
-print('\033[92m Arbol de tendido minimo\n \033[0m')
-arbol = mst_prim(grafo, 'Moscu')
-print(arbol)
-
-print('\033[92m Viajante\n \033[0m')
-lista = viajante_backtracing(grafo, 'Moscu')
+print('\033[92m Camino minimo entre Moscu y Sochi \033[0m')
+lista, peso = camino_minimo(grafo, 'Moscu', 'Sochi')
+print(str(peso) + ' esperado: 46')
 print(lista)
 
-print('\033[92m Viajante aproximado\n \033[0m')
-lista = viajante_greedy(grafo, 'Moscu')
+print('\033[92m Arbol de tendido minimo \033[0m')
+arbol, peso = mst_prim(grafo, 'Moscu')
+print(peso)
+print(arbol)
+
+print('\033[92m Viajante \033[0m')
+lista, peso = viajante_backtracing(grafo, 'Moscu')
+print(peso)
+for i in lista:
+	print(i)
+
+print('\033[92m Viajante aproximado \033[0m')
+lista, peso = viajante_greedy(grafo, 'Moscu')
+print(peso)
+print(lista)
+
+grafo_topologico = hacer_grafo_topologico(grafo, topologic_file)
+print(grafo_topologico)
+lista = orden_topologico(grafo_topologico)
 print(lista)
