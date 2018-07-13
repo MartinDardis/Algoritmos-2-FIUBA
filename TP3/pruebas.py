@@ -33,10 +33,10 @@ print(peso)
 print(arbol)
 
 print('\033[92m Viajante \033[0m')
-lista, peso = viajante_backtracing(grafo, 'Moscu')
+lista_de_listas, peso = viajante_backtracing(grafo, 'Moscu')
 print(peso)
-for i in lista:
-	print(i)
+for lista in lista_de_listas:
+	print(lista)
 
 print('\033[92m Viajante aproximado \033[0m')
 lista, peso = viajante_greedy(grafo, 'Moscu')
