@@ -9,18 +9,6 @@ def todos_visitados(vertices, visitados):
             return False
     return True
 
-def vertices_visitables_desde(grafo, origen):
-    visitados = []
-    cola = Cola()
-    cola.encolar(origen)
-    while not cola.esta_vacia():
-        v = cola.desencolar()
-        for w in grafo.adyacentes(v):
-            if w not in visitados:
-                cola.encolar(w)
-        visitados.append(v)
-    return visitados
-
 def hacer_grafo_topologico(grafo, topologic_file):
     grafo_topologico = Grafo(grafo.vertices)
     visitados = []
@@ -34,17 +22,6 @@ def hacer_grafo_topologico(grafo, topologic_file):
                 visitados.append(data[0])
             if data[1] not in visitados:
                 visitados.append(data[1])
-    for v in grafo_topologico.vertices:
-        if v not in visitados:
-            print('sin visitar agregue ' + str(v))
-            grafo_topologico.agregar_arista_simple(visitados[0], v, grafo.peso_arista(visitados[0], v))
-
-    visitables_desde_origen = vertices_visitables_desde(grafo_topologico, visitados[0])
-    for v in grafo_topologico.vertices:
-        if v not in visitables_desde_origen:
-            print('sin conectar agregue ' + str(v))
-            grafo_topologico.agregar_arista_simple(visitados[0], v, grafo.peso_arista(visitados[0], v))
-            visitables_desde_origen = vertices_visitables_desde(grafo_topologico, visitados[0])
     return grafo_topologico
 
 def orden_topologico(grafo):
