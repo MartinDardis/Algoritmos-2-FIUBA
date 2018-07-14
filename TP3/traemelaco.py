@@ -6,6 +6,7 @@ from grafo import *
 city_file = argv[1]
 map_file = argv[2]
 city_coord = {}
+
 grafo = Grafo()
 
 with open(city_file,'r') as cities:
@@ -26,7 +27,7 @@ with open(city_file,'r') as cities:
 
 
 def camino (grafo,desde,hasta):
-	lista = camino_minimo(grafo,desde,hasta)
+	lista, peso = camino_minimo(grafo,desde,hasta)
 	salida = []
 	anterior = 0
 	peso = 0
@@ -38,6 +39,7 @@ def camino (grafo,desde,hasta):
 	j = ' -> ' #Este es el separador
 	crear_kml(salida,city_coord,map_file)
 	salida = j.join(salida)
+	salida += '\nCosto total: ' + str(peso)
 	print(salida)
 	print('Costo total: ' + str(peso))
 
@@ -67,28 +69,3 @@ while len(entrada) > 0:
 	else:
 		print('ERROR en comando' + spl[0])
 	entrada = input('')
-
-
-
-
-
-
-
-
-#print('\033[92m grafo\n \033[0m')
-#print(grafo)
-#print('\033[92m Camino minimo entre Kaliningrado y Nizhni Novgorod\n \033[0m')
-#lista = camino_minimo(grafo, 'Kaliningrado', 'Nizhni Novgorod')
-#print (lista)
-
-#print('\033[92m Arbol de tendido minimo\n \033[0m')
-#arbol = mst_prim(grafo, 'Moscu')
-#print(arbol)
-
-#print('\033[92m Viajante\n \033[0m')
-#lista = viajante_backtracing(grafo, 'Moscu')
-#print(lista)
-
-#print('\033[92m Viajante aproximado\n \033[0m')
-#lista = viajante_greedy(grafo, 'Moscu')
-#print(lista)
