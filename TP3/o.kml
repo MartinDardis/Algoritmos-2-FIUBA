@@ -3,6 +3,18 @@
 <Document>
 <name>KML</name>
 	<Placemark>
+	<name>Sochi</name>
+		<Point>
+			<coordinates>43.585278, 39.720278</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+	<name>Rostov del Don</name>
+		<Point>
+			<coordinates>47.233333, 39.716667</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
 	<name>Moscu</name>
 		<Point>
 			<coordinates>55.755833, 37.617778</coordinates>
@@ -21,13 +33,100 @@
 		</Point>
 	</Placemark>
 	<Placemark>
+	<name>San Petesburgo</name>
+		<Point>
+			<coordinates>59.950000, 30.316667</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+	<name>Kaliningrado</name>
+		<Point>
+			<coordinates>54.716667, 20.500000</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+	<name>Ekaterinburgo</name>
+		<Point>
+			<coordinates>56.833333, 60.583333</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+	<name>Nizhni Novgorod</name>
+		<Point>
+			<coordinates>56.326944, 44.007500</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+	<name>Kazan</name>
+		<Point>
+			<coordinates>55.790833, 49.114444</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+	<name>Volgogrado</name>
+		<Point>
+			<coordinates>48.700000, 44.483333</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+	<name>Sochi</name>
+		<Point>
+			<coordinates>43.585278, 39.720278</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>43.585278, 39.720278 47.233333, 39.716667</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>47.233333, 39.716667 55.755833, 37.617778</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
 		<LineString>
 			<coordinates>55.755833, 37.617778 53.183333, 50.116667</coordinates>
 		</LineString>
 	</Placemark>
 	<Placemark>
 		<LineString>
-			<coordinates>55.755833, 37.617778 54.183333, 45.183333</coordinates>
+			<coordinates>53.183333, 50.116667 54.183333, 45.183333</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>54.183333, 45.183333 59.950000, 30.316667</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>59.950000, 30.316667 54.716667, 20.500000</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>54.716667, 20.500000 56.833333, 60.583333</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>56.833333, 60.583333 56.326944, 44.007500</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>56.326944, 44.007500 55.790833, 49.114444</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>55.790833, 49.114444 48.700000, 44.483333</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<LineString>
+			<coordinates>48.700000, 44.483333 43.585278, 39.720278</coordinates>
 		</LineString>
 	</Placemark>
 </Document>

@@ -24,31 +24,32 @@ with open(city_file,'r') as cities:
 			grafo.agregar_arista_doble(data[0],data[1],int(data[2]))
 
 
-
-
 def camino (grafo,desde,hasta):
 	lista, peso = camino_minimo(grafo,desde,hasta)
-	salida = []
-	anterior = 0
-	peso = 0
-	for i in range(0,len(lista)):
-		salida.append(lista[i])
-		if not anterior == 0:
-			peso += grafo.peso_arista(anterior,lista[i])
-		anterior = lista[i]
 	j = ' -> ' #Este es el separador
-	crear_kml(salida,city_coord,map_file)
-	salida = j.join(salida)
+	crear_kml(lista,city_coord,map_file)
+	salida = j.join(lista)
 	salida += '\nCosto total: ' + str(peso)
 	print(salida)
-	print('Costo total: ' + str(peso))
 
 def viaje_optimo (grafo,origen):
-	print('ok')
+	lista, peso = viajante_backtracing(grafo,origen)
+	j = ' -> ' #Este es el separador
+	crear_kml(lista[0],city_coord,map_file)
+	salida = j.join(lista[0])
+	salida += '\nCosto total: ' + str(peso)
+	print(salida)
+
 def viaje_aproximado(grafo,origen):
-	print('ok')
+	lista, peso = viajante_backtracing(grafo,origen)
+	j = ' -> ' #Este es el separador
+	crear_kml(lista[0],city_coord,map_file)
+	salida = j.join(lista[0])
+	salida += '\nCosto total: ' + str(peso)
+	print(salida)
+
 def itinerario(grafo,archivo):
-	print('ok')
+	print(orden_topologico(grafo))
 def reducir_caminos(grafo,archivo):
 	print('ok')
 
@@ -58,14 +59,14 @@ while len(entrada) > 0:
 	spl = entrada.split( )
 	if spl[0] == 'ir':
 		camino(grafo,spl[1],spl[2])
-	elif spl[0] == 'viaje' and  spl[1] == 'optimo,':
+	elif spl[0] == 'viaje' and  spl[1] == 'optimo':
 		viaje_optimo(grafo,spl[2])
-	elif spl[0] == 'viaje' and spl[1] == 'aproximado,':
+	elif spl[0] == 'viaje' and spl[1] == 'aproximado':
 		viaje_aproximado(grafo,spl[2])
 	elif spl[0] == 'itinerario':
-		intinerario(grafo,spl[2])
+		itinerario(grafo,spl[1])
 	elif spl[0] == 'reducir_caminos':
-		reducir_caminos(grafo,spl[2])
+		reducir_caminos(grafo,spl[1])
 	else:
 		print('ERROR en comando' + spl[0])
 	entrada = input('')
