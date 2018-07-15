@@ -221,3 +221,29 @@ def crear_kml(salida,city_coord,map_file):
                 ant = s
         archivo.write('</Document>\n')
         archivo.write('</kml>\n')
+
+
+def crear_kml_de_grafo(grafo, city_coord,map_file):
+    with open(map_file,'w') as archivo:
+        archivo.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        archivo.write('<kml xmlns="http://earth.google.com/kml/2.1">\n')
+        archivo.write('<Document>\n')
+        archivo.write('<name>KML</name>\n')
+        for ciudad in grafo.vertices.keys():#coloca las ciudades
+            archivo.write('\t<Placemark>\n')
+            archivo.write('\t<name>' + ciudad + '</name>\n')
+            archivo.write('\t\t<Point>\n')
+            archivo.write('\t\t\t<coordinates>' + city_coord[ciudad] + '</coordinates>\n')
+            archivo.write('\t\t</Point>\n')
+            archivo.write('\t</Placemark>\n')
+        lista = grafo.todas_aristas()
+        for arista in lista:
+            sep = ', '
+            ciudades = arista.split(sep)
+            archivo.write('\t<Placemark>\n')
+            archivo.write('\t\t<LineString>\n')
+            archivo.write('\t\t\t<coordinates>' + city_coord[ciudades[0]] + ' ' + city_coord[ciudades[1]] + '</coordinates>\n')
+            archivo.write('\t\t</LineString>\n')
+            archivo.write('\t</Placemark>\n')
+        archivo.write('</Document>\n')
+        archivo.write('</kml>\n')

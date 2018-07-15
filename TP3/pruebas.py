@@ -7,8 +7,10 @@ from grafo import *
 city_file = argv[1]
 map_file = argv[2]
 topologic_file = 'ejemplo_recomendaciones.csv'
+map_file = 'arbol_tendido_minimo.kml'
 
 grafo = Grafo()
+coordenadas = {}
 
 with open(city_file,'r') as cities:
     mode = 0
@@ -18,6 +20,7 @@ with open(city_file,'r') as cities:
         elif mode == 1:
             data = lines.split(',')
             grafo.agregar_vertice(data[0])
+            coordenadas[data[0]]=(data[1]+', '+data[2])
         elif mode == 2:
             data = lines.split(',')
             grafo.agregar_arista_doble(data[0],data[1],int(data[2]))
@@ -32,6 +35,7 @@ print('\033[92m Arbol de tendido minimo \033[0m')
 arbol, peso = arbol_tendido_minimo(grafo)
 print(peso)
 print(arbol)
+crear_kml_de_grafo(arbol, coordenadas, map_file)
 
 print('\033[92m Viajante \033[0m')
 lista_de_listas, peso = viajante(grafo, 'Moscu')

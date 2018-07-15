@@ -106,3 +106,11 @@ class Grafo:
         if dirigido == False:
             peso_total = int(peso_total/2)
         return peso_total
+
+    def todas_aristas(self):
+        lista = []
+        for v in self.vertices:
+            for w in self.adyacentes(v):
+                if (str(w) + ', ' + str(v)) not in lista:
+                    lista.append(str(v) + ', ' + str(w))
+        return lista
