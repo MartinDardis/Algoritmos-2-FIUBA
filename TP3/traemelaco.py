@@ -28,12 +28,12 @@ with open(city_file,'r') as cities:
 def camino (grafo,desde,hasta):
 	lista, peso = camino_minimo(grafo,desde,hasta)
 	mostrar_resultado(lista, peso)
-	crear_kml(lista,coordenadas,map_file)
+	crear_kml(lista,city_coord,map_file)
 
 def viajante_backtracking (grafo,origen):
 	lista_de_listas, peso = viajante(grafo,origen)
-	mostrar_resultado(lista, peso)
-	crear_kml(lista_de_listas[0],coordenadas,map_file)
+	mostrar_resultado(lista_de_listas[0], peso)
+	crear_kml(lista_de_listas[0],city_coord,map_file)
 
 def viajante_greedy(grafo,origen):
 	lista, peso = viajante_aproximado(grafo,origen)
@@ -45,7 +45,7 @@ def itinerario(grafo,archivo):
 	lista = orden_topologico(grafo_topo)
 	peso = conseguir_peso(grafo, lista)
 	mostrar_resultado(lista, peso)
-	crear_kml(lista,coordenadas,map_file)
+	crear_kml(lista,city_coord,map_file)
 
 def reducir_caminos(grafo,archivo):
 	mst, peso = arbol_tendido_minimo(grafo)
