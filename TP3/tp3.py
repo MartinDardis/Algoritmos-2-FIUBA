@@ -259,4 +259,7 @@ def crear_csv(grafo,mst,city_coord,salida):
         lista = grafo.todas_aristas()
         archivo.write(str(len(lista))+'\n')
         for aristas in lista:
-            archivo.write(aristas + '\n' )
+            aristas = aristas.split(',')
+            aristas[1] = aristas[1][1:]
+            peso = mst.peso_arista(aristas[0],aristas[1])
+            archivo.write(aristas[0]+','+aristas[1] + ',' + str(peso) + '\n')
