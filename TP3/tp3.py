@@ -249,3 +249,7 @@ def crear_kml_de_grafo(grafo, city_coord,map_file):
             archivo.write('\t</Placemark>\n')
         archivo.write('</Document>\n')
         archivo.write('</kml>\n')
+
+def crear_csv(grafo,mst,city_coord,salida):
+    with open(salida,'W') as archivo:
+        archivo.write(str(len(mst))

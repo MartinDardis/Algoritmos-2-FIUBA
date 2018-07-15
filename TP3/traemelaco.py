@@ -49,12 +49,23 @@ def viaje_aproximado(grafo,origen):
 	print(salida)
 
 def itinerario(grafo,archivo):
-	print(orden_topologico(grafo))
+	grafo_topo = hacer_grafo_topologico(grafo,archivo)
+	lista = orden_topologico(grafo_topo)
+	print(lista)
+	crear_kml_de_grafo(lista,map_file)
+	j = ' -> ' #Este es el separador
+	salida = j.join(lista[0])
+	salida += '\nCosto total: ' + str(peso)
+	print(salida)
+
 def reducir_caminos(grafo,archivo):
-	print('ok')
+	mst, peso = arbol_tendido_minimo(grafo)
+	crear_csv(grafo,mst,city_coord,archivo)
+	print('Peso total: '+str(peso))
 
 entrada = input()
 while len(entrada) > 0:
+	entrada = entrada.rstrip()
 	entrada = entrada.replace(',',"")
 	spl = entrada.split( )
 	if spl[0] == 'ir':
