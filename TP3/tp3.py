@@ -251,5 +251,12 @@ def crear_kml_de_grafo(grafo, city_coord,map_file):
         archivo.write('</kml>\n')
 
 def crear_csv(grafo,mst,city_coord,salida):
-    with open(salida,'W') as archivo:
-        archivo.write(str(len(mst))
+    with open(salida,'w') as archivo:
+        cant_vertices = len(mst.vertices.keys())
+        archivo.write(str(cant_vertices)+'\n')
+        for v in mst.vertices.keys():
+            archivo.write(v+',' + city_coord[v]+ '\n')
+        lista = grafo.todas_aristas()
+        archivo.write(str(len(lista))+'\n')
+        for aristas in lista:
+            archivo.write(aristas + '\n' )

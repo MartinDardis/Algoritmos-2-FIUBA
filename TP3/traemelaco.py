@@ -12,6 +12,7 @@ grafo = Grafo()
 with open(city_file,'r') as cities:
 	mode = 0
 	for lines in cities:
+		lines = lines.rstrip()
 		if lines[0].isnumeric():
 			mode = mode + 1
 		elif mode == 1:
@@ -76,7 +77,7 @@ while len(entrada) > 0:
 		viaje_aproximado(grafo,spl[2])
 	elif spl[0] == 'itinerario':
 		itinerario(grafo,spl[1])
-	elif spl[0] == 'reducir_caminos':
+	elif spl[0] == 'reducir_caminos' or 'reducir caminos':
 		reducir_caminos(grafo,spl[1])
 	else:
 		print('ERROR en comando' + spl[0])
