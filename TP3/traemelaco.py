@@ -1,4 +1,5 @@
 
+import sys
 from sys import *
 from tp3 import *
 from grafo import *
@@ -52,11 +53,23 @@ def reducir_caminos(grafo,archivo):
 	crear_csv(mst,city_coord,archivo)
 	print('Peso total: '+str(peso))
 
-entrada = input()
-while len(entrada) > 0:
-	entrada = entrada.rstrip()
-	entrada = entrada.replace(',',"")
-	spl = entrada.split( )
+def procesar_linea(linea):
+    linea = linea.split(',')
+    param_2 = linea [1]
+    param_2 = param_2.rstrip()
+    param_2 = param_2[1:]
+    linea = linea[0].split(' ')
+    if len(linea) == 2:
+        comando = linea[0]
+        param_1 = linea[1]
+    else:
+        sep = ' '
+        comando = sep.join(linea[0],linea[1])
+        param_1 = linea [2]
+    return comando,param_1,param_2
+
+for line in sys.stdin:
+	spl = procesar_linea(line)
 	if spl[0] == 'ir':
 		camino(grafo,spl[1],spl[2])
 	elif spl[0] == 'viaje' and  spl[1] == 'optimo':
@@ -69,4 +82,3 @@ while len(entrada) > 0:
 		reducir_caminos(grafo,spl[1])
 	else:
 		print('ERROR en comando' + spl[0])
-	entrada = input('')
