@@ -1,8 +1,9 @@
 
-import sys
 from sys import *
 from tp3 import *
 from grafo import *
+
+
 
 city_file = argv[1]
 map_file = argv[2]
@@ -53,37 +54,50 @@ def reducir_caminos(grafo,archivo):
 	crear_csv(mst,city_coord,archivo)
 	print('Peso total: '+str(peso))
 
-def procesar_linea(linea):
-    linea = linea.split(',')
-    param_1 = None
-    param_2 = linea [1]
-    param_2 = param_2.rstrip()
-    param_2 = param_2[1:]
-    linea = linea[0].split(' ')
-    if len(linea) == 2:
-        comando = linea[0]
-        param_1 = linea[1]
-    elif linea[0] == 'viaje':
-        sep = ' '
-        comando = sep.join(linea[0],linea[1])
-        for i in range(2,len(linea)):
-            param_1 += linea [i]
-    else:
-        for i in range(2,len(linea)):
-            param_1 += linea [i]
-    return comando,param_1,param_2
+def separar(entrada):
+	split_aux = entrada.split(',')
+	split_aux[0] = split_aux[0].rstrip()
+	print(split_aux)
+	salida = []
+	sep = ' '
+	split = split_aux[0].split(' ')
+	print(split)
+	if len(split_aux) == 2 and split[0] == 'ir':
+		split_aux[1] = split_aux[1].rstrip()
+		split_aux[1] = split_aux[1][1::]
+		salida.append(split[0])
+		split.remove(split[0])
+		secuencia = sep.join(split)
+		salida.append(secuencia)
+		salida.append(split_aux[1])
 
-for line in sys.stdin:
-	spl = procesar_linea(line)
+	elif split[0] == 'viaje':
+		salida.append(split[0] + ' ' + split[1])
+		split.remove(split[0])
+		split.remove(split[0])
+		salida.append(sep.join(split))
+
+	else:
+		print('estoy aca')
+		salida.append(split[0])
+		split.remove(split[0])
+		salida.append(sep.join(split))
+	print (salida)
+	return salida
+
+entrada = input()
+while len(entrada) > 0:
+	spl = separar(entrada)
 	if spl[0] == 'ir':
 		camino(grafo,spl[1],spl[2])
-	elif spl[0] == 'viaje' and  spl[1] == 'optimo':
-		viajante_backtracking(grafo,spl[2])
-	elif spl[0] == 'viaje' and spl[1] == 'aproximado':
-		viajante_greedy(grafo,spl[2])
+	elif spl[0] == 'viaje optimo' or 'viaje_optimo':
+		viajante_backtracking(grafo,spl[1])
+	elif spl[0] == 'viaje aproximado' or 'viaje_aproximado':
+		viajante_greedy(grafo,spl[1])
 	elif spl[0] == 'itinerario':
 		itinerario(grafo,spl[1])
 	elif spl[0] == 'reducir_caminos' or 'reducir caminos':
 		reducir_caminos(grafo,spl[1])
 	else:
 		print('ERROR en comando' + spl[0])
+	entrada = input('')
