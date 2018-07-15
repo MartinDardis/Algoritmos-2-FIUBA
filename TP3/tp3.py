@@ -46,6 +46,7 @@ def orden_topologico_dfs(grafo, v, pila, visitados, grados):
             if grados[w] == 0:
                 orden_topologico_dfs(grafo, w, pila, visitados, grados)
 
+
 def camino_minimo(grafo, origen, fin):
     dist = {}
     padre = {}
@@ -161,27 +162,28 @@ def viajante_greedy(grafo, inicio):
     return lista, peso_total
 
 def crear_kml(salida,city_coord,map_file):
-	with open(map_file,'w') as archivo:
-		archivo.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-		archivo.write('<kml xmlns="http://earth.google.com/kml/2.1">\n')
-		archivo.write('<Document>\n')
-		archivo.write('<name>KML</name>\n')
-		for s in salida:#coloca las ciudades
-			archivo.write('\t<Placemark>\n')
-			archivo.write('\t<name>'+s+'</name>\n')
-			archivo.write('\t\t<Point>\n')
-			archivo.write('\t\t\t<coordinates>'+city_coord[s]+'</coordinates>\n')
-			archivo.write('\t\t</Point>\n')
-			archivo.write('\t</Placemark>\n')
-		ant = None
-		for s in salida:
-			if ant == None:
-				ant = s
-			else:
-				archivo.write('\t<Placemark>\n')
-				archivo.write('\t\t<LineString>\n')
-				archivo.write('\t\t\t<coordinates>'+city_coord[ant]+' '+city_coord[s]+'</coordinates>\n')
-				archivo.write('\t\t</LineString>\n')
-				archivo.write('\t</Placemark>\n')
-		archivo.write('</Document>\n')
-		archivo.write('</kml>\n')
+    with open(map_file,'w') as archivo:
+        archivo.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        archivo.write('<kml xmlns="http://earth.google.com/kml/2.1">\n')
+        archivo.write('<Document>\n')
+        archivo.write('<name>KML</name>\n')
+        for s in salida:#coloca las ciudades
+            archivo.write('\t<Placemark>\n')
+            archivo.write('\t<name>'+s+'</name>\n')
+            archivo.write('\t\t<Point>\n')
+            archivo.write('\t\t\t<coordinates>'+city_coord[s]+'</coordinates>\n')
+            archivo.write('\t\t</Point>\n')
+            archivo.write('\t</Placemark>\n')
+        ant = None
+        for s in salida:
+            if ant == None:
+                ant = s
+            else:
+                archivo.write('\t<Placemark>\n')
+                archivo.write('\t\t<LineString>\n')
+                archivo.write('\t\t\t<coordinates>'+city_coord[ant]+' '+city_coord[s]+'</coordinates>\n')
+                archivo.write('\t\t</LineString>\n')
+                archivo.write('\t</Placemark>\n')
+                ant = s
+        archivo.write('</Document>\n')
+        archivo.write('</kml>\n')
