@@ -3,6 +3,20 @@ from sys import *
 from tp3 import *
 from grafo import *
 
+def mostrar_resultado(lista, peso):
+    sep = ' -> '
+    camino = sep.join(lista)
+    print(camino + '\nCosto total: ' + str(peso))
+
+def conseguir_peso(lista):
+    anterior = 0
+    peso = 0
+    for i in range(0,len(lista)):
+        if not anterior == 0:
+            peso += grafo.peso_arista(anterior,lista[i])
+        anterior = lista[i]
+    return peso
+
 city_file = argv[1]
 map_file = argv[2]
 topologic_file = 'ejemplo_recomendaciones.csv'
@@ -10,40 +24,38 @@ topologic_file = 'ejemplo_recomendaciones.csv'
 grafo = Grafo()
 
 with open(city_file,'r') as cities:
-	mode = 0
-	for lines in cities:
-		if lines[0].isnumeric():
-			mode = mode + 1
-		elif mode == 1:
-			data = lines.split(',')
-			grafo.agregar_vertice(data[0])
-		elif mode == 2:
-			data = lines.split(',')
-			grafo.agregar_arista_doble(data[0],data[1],int(data[2]))
+    mode = 0
+    for lines in cities:
+        if lines[0].isnumeric():
+            mode = mode + 1
+        elif mode == 1:
+            data = lines.split(',')
+            grafo.agregar_vertice(data[0])
+        elif mode == 2:
+            data = lines.split(',')
+            grafo.agregar_arista_doble(data[0],data[1],int(data[2]))
 
 print('\033[92m grafo \033[0m')
 print(grafo)
 print('\033[92m Camino minimo entre Moscu y Sochi \033[0m')
 lista, peso = camino_minimo(grafo, 'Moscu', 'Sochi')
-print (str(peso) + '\n' + str(lista))
+mostrar_resultado(lista, peso)
 
 print('\033[92m Arbol de tendido minimo \033[0m')
-arbol, peso = mst_prim(grafo, 'Moscu')
+arbol, peso = arbol_tendido_minimo(grafo)
 print(peso)
 print(arbol)
 
 print('\033[92m Viajante \033[0m')
-lista_de_listas, peso = viajante_backtracing(grafo, 'Moscu')
-print(peso)
-for lista in lista_de_listas:
-	print(lista)
+lista_de_listas, peso = viajante(grafo, 'Moscu')
+mostrar_resultado(lista_de_listas[0], peso)
 
 print('\033[92m Viajante aproximado \033[0m')
-lista, peso = viajante_greedy(grafo, 'Moscu')
-print(peso)
-print(lista)
+lista, peso = viajante_aproximado(grafo, 'Moscu')
+mostrar_resultado(lista, peso)
 
 print('\033[92m Orden topologico \033[0m')
 grafo_topologico = hacer_grafo_topologico(grafo, topologic_file)
 lista = orden_topologico(grafo_topologico)
-print(lista)
+peso = conseguir_peso(lista)
+mostrar_resultado(lista, peso)

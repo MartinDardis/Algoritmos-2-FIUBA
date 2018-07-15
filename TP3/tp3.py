@@ -3,11 +3,52 @@ from pila import *
 from heap import *
 from grafo import *
 
+### FUNCIONES AUXILIARES ###
+
 def todos_visitados(vertices, visitados):
     for u in vertices:
         if u not in visitados:
             return False
     return True
+
+def encolar_adyacentes(grafo, v, heap):
+    for w in grafo.adyacentes(v):
+        arista = Arista(v, w, grafo.peso_arista(v,w))
+        heap.encolar(arista)
+
+
+### CAMINO MINIMO
+
+def camino_minimo(grafo, desde, hasta):
+    dist = {}
+    padre = {}
+    for v in grafo.vertices:
+        dist[v] = 99999 #infinito
+    dist[desde] = 0
+    padre[desde] = None
+    heap = Heap()
+    heap.encolar(desde)
+    while not heap.esta_vacia():
+        v = heap.desencolar()
+        for w in grafo.adyacentes(v):
+            if dist[v] + grafo.peso_arista(v, w) < dist[w]:
+                padre[w] = v
+                dist[w] = dist[v] + grafo.peso_arista(v,w)
+                heap.encolar(w)
+                
+    pila = Pila()
+    v = hasta
+    peso_total = 0
+    while v != None:
+        pila.apilar(v)
+        if padre[v] != None:
+            peso_total += grafo.peso_arista(v, padre[v])
+        v = padre[v]
+
+    lista = pila.pila_a_lista()
+    return lista, peso_total
+
+### ORDEN TOPOLOGICO
 
 def hacer_grafo_topologico(grafo, topologic_file):
     grafo_topologico = Grafo(grafo.vertices)
@@ -46,86 +87,61 @@ def orden_topologico_dfs(grafo, v, pila, visitados, grados):
             if grados[w] == 0:
                 orden_topologico_dfs(grafo, w, pila, visitados, grados)
 
-def camino_minimo(grafo, origen, fin):
-    dist = {}
-    padre = {}
-    for v in grafo.vertices:
-        dist[v] = 99999 #infinito
-    dist[origen] = 0
-    padre[origen] = None
-    heap = Heap()
-    heap.encolar(origen)
-    while not heap.esta_vacia():
-        v = heap.desencolar()
-        for w in grafo.adyacentes(v):
-            if dist[v] + grafo.peso_arista(v, w) < dist[w]:
-                padre[w] = v
-                dist[w] = dist[v] + grafo.peso_arista(v,w)
-                heap.encolar(w)
 
-    pila = Pila()
-    v = fin
-    peso_total = 0
-    while v != None:
-        pila.apilar(v)
-        if padre[v] != None:
-            peso_total += grafo.peso_arista(v, padre[v])
-        v = padre[v]
 
-    lista = pila.pila_a_lista()
-    return lista, peso_total
+### ARBOL DE TENDIDO MINIMO
 
-def mst_prim(grafo, inicio):
+def arbol_tendido_minimo(grafo):
+    for clave in grafo.vertices.keys():
+        continue
+    return mst_prim(grafo, clave)
+
+def mst_prim(grafo, origen):
     visitados = []
-    visitados.append(inicio)
+    visitados.append(origen)
     heap = Heap()
-
-    for v in grafo.vertices:
-        for w in grafo.adyacentes(v):
-            arista = Arista(v, w, grafo.peso_arista(v,w))
-            heap.encolar(arista)
-
     arbol = Grafo(grafo.vertices)
+
+    encolar_adyacentes(grafo, origen, heap)
 
     while not heap.esta_vacia():
         arista = heap.desencolar()
-        if arista.destino in visitados:
-            continue
-        arbol.agregar_arista_doble(arista.origen, arista.destino, arista.peso)
-        visitados.append(arista.destino)
+        if arista.destino not in visitados:
+            arbol.agregar_arista_doble(arista.origen, arista.destino, arista.peso)
+            visitados.append(arista.destino)
+            encolar_adyacentes(grafo, arista.destino, heap)
 
-    peso_total = 0
-    for v in arbol.vertices:
-        for w in arbol.adyacentes(v):
-            peso_total += arbol.peso_arista(v, w)
+    peso_total = arbol.peso_total()
     return arbol, peso_total
 
-def viajante_backtracing(grafo, inicio):
+### VIAJANTE
+
+def viajante(grafo, origen):
     visitados = []
     minimo = 99999 #infinito
     peso_actual = 0
     resultados = []
     pila = Pila()
-    pila.apilar(inicio)
+    pila.apilar(origen)
     peso = 0
-    minimo = viajante_backtracing_recursivo(grafo, inicio, inicio, visitados, peso, minimo, pila, resultados)
+    minimo = viajante_recursivo(grafo, origen, origen, visitados, peso, minimo, pila, resultados)
     return resultados, minimo
 
-def viajante_backtracing_recursivo(grafo, inicio, v, visitados, peso, minimo, pila, resultados):
+def viajante_recursivo(grafo, origen, v, visitados, peso, minimo, pila, resultados):
     visitados.append(v)
     for w in grafo.adyacentes(v):
         if w not in visitados:
             peso += grafo.peso_arista(v, w)
             if peso < minimo:
                 pila.apilar(w)
-                minimo = viajante_backtracing_recursivo(grafo, inicio, w, visitados, peso, minimo, pila, resultados)
+                minimo = viajante_recursivo(grafo, origen, w, visitados, peso, minimo, pila, resultados)
                 pila.desapilar()
             peso -= grafo.peso_arista(v, w)
 
     if todos_visitados(grafo.vertices, visitados):
-        peso += grafo.peso_arista(inicio, pila.ver_tope())
+        peso += grafo.peso_arista(origen, pila.ver_tope())
         if peso <= minimo:
-            pila.apilar(inicio)
+            pila.apilar(origen)
             lista = pila.pila_a_lista()
             if peso < minimo:
                 minimo = peso
@@ -133,17 +149,20 @@ def viajante_backtracing_recursivo(grafo, inicio, v, visitados, peso, minimo, pi
                     resultados.pop()
             resultados.append(lista)
             pila.desapilar()
-        peso -= grafo.peso_arista(inicio, pila.ver_tope())
+        peso -= grafo.peso_arista(origen, pila.ver_tope())
     visitados.remove(v)
     return minimo
 
-def viajante_greedy(grafo, inicio):
+
+### VIAJANTE APROXIMADO
+
+def viajante_aproximado(grafo, origen):
     visitados = []
     pila = Pila()
-    pila.apilar(inicio)
-    visitados.append(inicio)
+    pila.apilar(origen)
+    visitados.append(origen)
     peso_total = 0
-    v = inicio
+    v = origen
     while not todos_visitados(grafo.vertices, visitados):
         minimo = 99999 #infinito
         for w in grafo.adyacentes(v):
@@ -155,10 +174,13 @@ def viajante_greedy(grafo, inicio):
         pila.apilar(vertice)
         visitados.append(vertice)
         v = vertice
-    peso_total += grafo.peso_arista(vertice, inicio)
-    pila.apilar(inicio)
+    peso_total += grafo.peso_arista(vertice, origen)
+    pila.apilar(origen)
     lista = pila.pila_a_lista()
     return lista, peso_total
+
+
+###
 
 def crear_kml(salida,city_coord,map_file):
 	with open(map_file,'w') as archivo:

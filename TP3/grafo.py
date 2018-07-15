@@ -97,3 +97,12 @@ class Grafo:
             string += str(self.vertices[v])
             string += '\n\n'
         return string
+
+    def peso_total(self, dirigido = False):
+        peso_total = 0
+        for v in self.vertices:
+            for w in self.adyacentes(v):
+                peso_total += self.peso_arista(v, w)
+        if dirigido == False:
+            peso_total = int(peso_total/2)
+        return peso_total
