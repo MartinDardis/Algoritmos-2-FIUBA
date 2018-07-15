@@ -250,16 +250,17 @@ def crear_kml_de_grafo(grafo, city_coord,map_file):
         archivo.write('</Document>\n')
         archivo.write('</kml>\n')
 
-def crear_csv(grafo,mst,city_coord,salida):
+def crear_csv(grafo,city_coord,salida):
     with open(salida,'w') as archivo:
-        cant_vertices = len(mst.vertices.keys())
+        cant_vertices = len(grafo.vertices.keys())
         archivo.write(str(cant_vertices)+'\n')
-        for v in mst.vertices.keys():
+        for v in grafo.vertices.keys():
             archivo.write(v+',' + city_coord[v]+ '\n')
         lista = grafo.todas_aristas()
+        print(lista)
         archivo.write(str(len(lista))+'\n')
         for aristas in lista:
             aristas = aristas.split(',')
             aristas[1] = aristas[1][1:]
-            peso = mst.peso_arista(aristas[0],aristas[1])
+            peso = grafo.peso_arista(aristas[0],aristas[1])
             archivo.write(aristas[0]+','+aristas[1] + ',' + str(peso) + '\n')
