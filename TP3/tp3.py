@@ -88,6 +88,8 @@ def orden_topologico(grafo):
     for v in grafo.vertices:
         if v not in visitados and grados[v] == 0:
             orden_topologico_dfs(grafo, v, pila, visitados, grados)
+    if not todos_visitados(grafo.vertices,  visitados):
+        return None
     lista= pila.pila_a_lista()
     lista = lista[::-1]
     return lista
