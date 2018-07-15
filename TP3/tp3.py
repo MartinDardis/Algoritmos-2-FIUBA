@@ -17,6 +17,20 @@ def encolar_adyacentes(grafo, v, heap):
         heap.encolar(arista)
 
 
+def mostrar_resultado(lista, peso):
+    sep = ' -> '
+    camino = sep.join(lista)
+    print(camino + '\nCosto total: ' + str(peso))
+
+def conseguir_peso(grafo, lista):
+    anterior = 0
+    peso = 0
+    for i in range(0,len(lista)):
+        if not anterior == 0:
+            peso += grafo.peso_arista(anterior,lista[i])
+        anterior = lista[i]
+    return peso
+
 ### CAMINO MINIMO
 
 def camino_minimo(grafo, desde, hasta):

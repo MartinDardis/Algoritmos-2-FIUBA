@@ -3,19 +3,6 @@ from sys import *
 from tp3 import *
 from grafo import *
 
-def mostrar_resultado(lista, peso):
-    sep = ' -> '
-    camino = sep.join(lista)
-    print(camino + '\nCosto total: ' + str(peso))
-
-def conseguir_peso(lista):
-    anterior = 0
-    peso = 0
-    for i in range(0,len(lista)):
-        if not anterior == 0:
-            peso += grafo.peso_arista(anterior,lista[i])
-        anterior = lista[i]
-    return peso
 
 city_file = argv[1]
 map_file = argv[2]
@@ -57,5 +44,5 @@ mostrar_resultado(lista, peso)
 print('\033[92m Orden topologico \033[0m')
 grafo_topologico = hacer_grafo_topologico(grafo, topologic_file)
 lista = orden_topologico(grafo_topologico)
-peso = conseguir_peso(lista)
+peso = conseguir_peso(grafo, lista)
 mostrar_resultado(lista, peso)
