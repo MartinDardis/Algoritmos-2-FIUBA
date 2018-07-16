@@ -1,0 +1,17 @@
+5
+Moscu,55.755833,37.617778
+San Petesburgo,59.950000,30.316667
+Kaliningrado,54.716667,20.500000
+Kazan,55.790833,49.114444
+Nizhni Novgorod,56.326944,44.007500
+10
+Moscu,San Petesburgo,4
+Moscu,Kaliningrado,3
+Moscu,Kazan,13
+Moscu,Nizhni Novgorod,4
+San Petesburgo,Kaliningrado,4
+San Petesburgo,Kazan,19
+San Petesburgo,Nizhni Novgorod,12
+Kaliningrado,Kazan,6
+Kaliningrado,Nizhni Novgorod,30
+Kazan,Nizhni Novgorod,1
