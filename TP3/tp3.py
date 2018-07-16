@@ -257,7 +257,6 @@ def crear_csv(grafo,city_coord,salida):
         for v in grafo.vertices.keys():
             archivo.write(v+',' + city_coord[v]+ '\n')
         lista = grafo.todas_aristas()
-        print(lista)
         archivo.write(str(len(lista))+'\n')
         for aristas in lista:
             aristas = aristas.split(',')
