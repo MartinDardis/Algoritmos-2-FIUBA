@@ -1,4 +1,4 @@
-
+import sys
 from sys import *
 from tp3 import *
 from grafo import *
@@ -55,49 +55,49 @@ def reducir_caminos(grafo,archivo):
 	print('Peso total: '+str(peso))
 
 def separar(entrada):
-	split_aux = entrada.split(',')
-	split_aux[0] = split_aux[0].rstrip()
-	print(split_aux)
-	salida = []
-	sep = ' '
-	split = split_aux[0].split(' ')
-	print(split)
-	if len(split_aux) == 2 and split[0] == 'ir':
-		split_aux[1] = split_aux[1].rstrip()
-		split_aux[1] = split_aux[1][1::]
-		salida.append(split[0])
-		split.remove(split[0])
-		secuencia = sep.join(split)
-		salida.append(secuencia)
-		salida.append(split_aux[1])
+    split = entrada.split(' ')
+    if split [0] == 'viaje':
+        comando = split[0]+' '+split[1]
+        param_1=''
+        for i in range(2,len(split)):
+                param_1 +=split[i]
+                if not i == len(split):
+                    param_1 += ' '
+        param_1 = param_1.rstrip()
+        comando = comando[:-1]
+        return comando , param_1
+    elif split [0] == 'ir':
+        param_1 =''
+        param_2 =''
+        ultimo = 1
+        for i in range(1,len(split)):
+            ultimo = i
+            param_1 += split[i]
+            if ',' in split[i]:
+                break
+            else:
+                param_1 += ' '
+        for i in range(ultimo+1,len(split)):
+            param_2 += split[i]
+            param_2 += ' '
+        param_1 = param_1[:-1]
+        param_2 = param_2[:-1]
+        return split[0],param_1,param_2
+    else:
+        return split[0],split[1]
 
-	elif split[0] == 'viaje':
-		salida.append(split[0] + ' ' + split[1])
-		split.remove(split[0])
-		split.remove(split[0])
-		salida.append(sep.join(split))
+for line in sys.stdin:
+    spl = separar(line)
+    if spl[0] == 'ir':
+        camino(grafo,spl[1],spl[2])
+    elif spl[0] == 'viaje optimo' or spl[0] == 'viaje_optimo':
+        viajante_backtracking(grafo,spl[1])
+    elif spl[0] == 'viaje aproximado' or spl[0] == 'viaje_aproximado':
+        viajante_greedy(grafo,spl[1])
+    elif spl[0] == 'itinerario':
+        itinerario(grafo,spl[1])
+    elif spl[0] == 'reducir_caminos' or spl[0] == 'reducir caminos':
+        reducir_caminos(grafo,spl[1])
 
-	else:
-		print('estoy aca')
-		salida.append(split[0])
-		split.remove(split[0])
-		salida.append(sep.join(split))
-	print (salida)
-	return salida
-
-entrada = input()
-while len(entrada) > 0:
-	spl = separar(entrada)
-	if spl[0] == 'ir':
-		camino(grafo,spl[1],spl[2])
-	elif spl[0] == 'viaje optimo' or 'viaje_optimo':
-		viajante_backtracking(grafo,spl[1])
-	elif spl[0] == 'viaje aproximado' or 'viaje_aproximado':
-		viajante_greedy(grafo,spl[1])
-	elif spl[0] == 'itinerario':
-		itinerario(grafo,spl[1])
-	elif spl[0] == 'reducir_caminos' or 'reducir caminos':
-		reducir_caminos(grafo,spl[1])
-	else:
-		print('ERROR en comando' + spl[0])
-	entrada = input('')
+    else:
+        print('ERROR en comando' + spl[0])
